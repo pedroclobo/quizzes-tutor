@@ -51,6 +51,9 @@ public class CourseExecution implements DomainEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "courseExecution", orphanRemoval = true)
     private final Set<DifficultQuestion> difficultQuestions = new HashSet<>();
 
+    @OneToOne
+    private StudentStats studentStats;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -247,6 +250,10 @@ public class CourseExecution implements DomainEntity {
                 .count();
     }
 
+    public int number(){
+        return (int) this.users.stream().filter(user -> user.getRole().equals(User.Role.STDENT) && )
+    }
+
     public int getNumberofInactiveTeachers() {
         return (int) this.users.stream()
                 .filter(user ->
@@ -269,6 +276,7 @@ public class CourseExecution implements DomainEntity {
                                 (user.getAuthUser() == null || !user.getAuthUser().isActive()))
                 .count();
     }
+
 
     public int getNumberOfQuizzes() {
         return this.quizzes.size();
