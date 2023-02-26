@@ -15,6 +15,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.Student;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.Teacher;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.User;
+import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain.StudentStats;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -250,9 +251,6 @@ public class CourseExecution implements DomainEntity {
                 .count();
     }
 
-    public int number(){
-        return (int) this.users.stream().filter(user -> user.getRole().equals(User.Role.STDENT) && )
-    }
 
     public int getNumberofInactiveTeachers() {
         return (int) this.users.stream()

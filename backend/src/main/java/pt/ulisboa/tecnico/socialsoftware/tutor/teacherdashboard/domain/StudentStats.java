@@ -3,11 +3,9 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain;
 import pt.ulisboa.tecnico.socialsoftware.tutor.execution.domain.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.DomainEntity;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
-import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.Teacher;
-import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.dto;
 
 import javax.persistence.*;
-
+import java.util.Set;
 
 @Entity
 public class StudentStats implements DomainEntity{
@@ -16,7 +14,9 @@ public class StudentStats implements DomainEntity{
     private Integer id;
 
 
-    private int numberOfStudents;
+    private int numStudents;
+
+    private int numMore75CorrectQuestions;
 
     @ManyToOne
     private TeacherDashboard teacherDashboard;
@@ -27,7 +27,6 @@ public class StudentStats implements DomainEntity{
     public StudentStats(){}
 
     public StudentStats(TeacherDashboard teacherDashboard, CourseExecution courseExecution){
-       // this.numberOfStudents = numberOfStudents;
         this.teacherDashboard = teacherDashboard;
         this.courseExecution = courseExecution;
     }
@@ -36,12 +35,12 @@ public class StudentStats implements DomainEntity{
         return id;
     }
 
-    public int getNumberOfStudents() {
-        return numberOfStudents;
+    public int getNumStudents() {
+        return numStudents;
     }
 
-    public void setNumberOfStudents(int numberOfStudents){
-        this.numberOfStudents = numberOfStudents;
+    public void setNumStudents(int numStudents){
+        this.numStudents = numStudents;
     }
 
     public TeacherDashboard getTeacherDashboard() {
@@ -60,9 +59,25 @@ public class StudentStats implements DomainEntity{
         this.courseExecution = courseExecution;
     }
 
+    public void setNumMore75CorrectQuestions(int newNumMore75CorrectQuestions) {
+        this.numMore75CorrectQuestions = newNumMore75CorrectQuestions;
+    }
+
+    public int getNumMore75CorrectQuestions() {
+        return numMore75CorrectQuestions;
+    }
+
 
     public void update() {
-        setNumberOfStudents(courseExecution.getStudents().size());
+        setNumStudents(courseExecution.getStudents().size());
+        setNumMore75CorrectQuestions((int) courseExecution.getStudents()
+                .stream()
+                .filter(student -> student.getpercentageOfCorrectAnswers() >= 75)
+                .count());
+    }
+
+    public void accept(Visitor visitor) {
+        // Only used for XML generation
     }
 
     @Override
@@ -71,7 +86,7 @@ public class StudentStats implements DomainEntity{
                 "id=" + id +
                 ", courseExecution=" + courseExecution +
                 ", teacherDashboard=" + teacherDashboard +
-                ", numberOfStudents=" + numberOfStudents +
+                ", numStudents=" + numStudents +
                 '}';
     }
 }
