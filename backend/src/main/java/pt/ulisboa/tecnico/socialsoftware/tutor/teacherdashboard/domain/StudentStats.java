@@ -5,7 +5,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.DomainEntity;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
 public class StudentStats implements DomainEntity{
