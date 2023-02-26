@@ -71,7 +71,8 @@ public class StudentStats implements DomainEntity{
         setNumStudents(courseExecution.getStudents().size());
         setNumMore75CorrectQuestions((int) courseExecution.getStudents()
                 .stream()
-                .filter(student -> student.studentDashboard.getNumberOfCorrectStudentAnswers() / student.studentDashboard.getNumberOfStudentAnswers() >= 75)
+                .filter(student -> (100 * student.getCourseExecutionDashboard(courseExecution).getNumberOfCorrectStudentAnswers()) / 
+                student.getCourseExecutionDashboard(courseExecution).getNumberOfStudentAnswers() >= 75)
                 .count());
     }
 
