@@ -15,17 +15,18 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.execution.domain.CourseExecution
 class NumStudentsTest extends SpockTest {
     def student1
     def student2
+    def courseExecution;
 
     def setup() {
         student1 = new Student(USER_1_NAME, false)
         student2 = new Student(USER_2_NAME, false)
         userRepository.save(student1)
         userRepository.save(student2)
+        courseExecution = new CourseExecution()
     }
 
     def "Test student stats entity numStudents and testing set method for said attribute"() {
         given:
-        def courseExecution = new CourseExecution()
         def teacher = new Teacher()
         def dashboard = new TeacherDashboard(courseExecution, teacher)
         def studentStats = new StudentStats(dashboard, courseExecution)
@@ -34,21 +35,21 @@ class NumStudentsTest extends SpockTest {
         studentStats.update()
 
         then:
-        studentStats.numberOfStudents == 0
+        studentStats.getNumStudents() == 0
 
         when:
         courseExecution.addUser(student1)
         studentStats.update()
 
         then:
-        studentStats.numberOfStudents == 1
+        studentStats.getNumStudents() == 1
 
         when:
         courseExecution.addUser(student2)
         studentStats.update()
 
         then:
-        studentStats.numberOfStudents == 2
+        studentStats.getNumStudents() == 2
     }
     @TestConfiguration
     static class LocalBeanConfiguration extends BeanConfiguration {}

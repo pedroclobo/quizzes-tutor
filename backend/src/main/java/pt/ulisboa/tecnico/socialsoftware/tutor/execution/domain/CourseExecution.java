@@ -125,6 +125,15 @@ public class CourseExecution implements DomainEntity {
         this.acronym = acronym;
     }
 
+    public StudentStats getStudentStats() {
+        return studentStats;
+    }
+
+    public void setStudentStats(StudentStats studentStats) {
+        this.studentStats = studentStats;
+        studentStats.setCourseExecution(this);
+    }
+
     public String getAcademicTerm() {
         return academicTerm;
     }

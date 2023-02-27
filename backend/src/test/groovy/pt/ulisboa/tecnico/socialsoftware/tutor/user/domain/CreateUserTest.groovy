@@ -9,6 +9,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.auth.domain.AuthExternalUser
 import pt.ulisboa.tecnico.socialsoftware.tutor.auth.domain.AuthTecnicoUser
 import pt.ulisboa.tecnico.socialsoftware.tutor.auth.domain.AuthUser
 
+
 @DataJpaTest
 class CreateUserTest extends SpockTest {
     def user
