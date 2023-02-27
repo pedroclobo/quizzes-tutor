@@ -17,6 +17,8 @@ public class StudentStats implements DomainEntity{
 
     private int numMore75CorrectQuestions;
 
+    private int numAtleats3Quizzes;
+
     @ManyToOne
     private TeacherDashboard teacherDashboard;
 
@@ -66,6 +68,13 @@ public class StudentStats implements DomainEntity{
         return numMore75CorrectQuestions;
     }
 
+    public void setnumAtleats3Quizzes(int numAtleats3Quizzes) {
+        this.numAtleats3Quizzes = numAtleats3Quizzes;
+    }
+
+    public int getnumAtleats3Quizzes() {
+        return numAtleats3Quizzes;
+    }
 
     public void update() {
         setNumStudents(courseExecution.getStudents().size());
@@ -74,10 +83,13 @@ public class StudentStats implements DomainEntity{
                 .filter(student -> (100 * student.getCourseExecutionDashboard(courseExecution).getNumberOfCorrectStudentAnswers()) / 
                 student.getCourseExecutionDashboard(courseExecution).getNumberOfStudentAnswers() >= 75)
                 .count());
+        setnumAtleats3Quizzes((int) courseExecution.getStudents().stream()
+        .filter(student -> student.getCourseExecutionDashboard(courseExecution).getNumberOfStudentQuizzes() >= 3)
+        .count());
     }
 
     public void accept(Visitor visitor) {
-        // Only used for XML generation
+         // Only used for XML generation
     }
 
     @Override
@@ -87,6 +99,8 @@ public class StudentStats implements DomainEntity{
                 ", courseExecution=" + courseExecution +
                 ", teacherDashboard=" + teacherDashboard +
                 ", numStudents=" + numStudents +
+                ", numMore75CorrectQuestions " + numMore75CorrectQuestions +
+                ", numAtleats3Quizzes" + numAtleats3Quizzes +
                 '}';
     }
 }
