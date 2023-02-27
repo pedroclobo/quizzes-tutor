@@ -6,6 +6,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.Teacher
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.Student
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain.TeacherDashboard
+import pt.ulisboa.tecnico.socialsoftware.tutor.studentdashboard.domain.StudentDashboard
 import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain.StudentStats
 import org.springframework.boot.test.context.TestConfiguration
 import pt.ulisboa.tecnico.socialsoftware.tutor.BeanConfiguration
@@ -30,6 +31,13 @@ class NumStudentsTest extends SpockTest {
         def teacher = new Teacher()
         def dashboard = new TeacherDashboard(courseExecution, teacher)
         def studentStats = new StudentStats(dashboard, courseExecution)
+        def board1 = new StudentDashboard(courseExecution, student1)
+        def board2 = new StudentDashboard(courseExecution, student2)
+        board1.numberOfStudentAnswers = 8
+        board1.numberOfCorrectStudentAnswers = 6
+        board2.numberOfStudentAnswers = 8
+        board2.numberOfCorrectStudentAnswers = 6
+
 
         when:
         studentStats.update()
