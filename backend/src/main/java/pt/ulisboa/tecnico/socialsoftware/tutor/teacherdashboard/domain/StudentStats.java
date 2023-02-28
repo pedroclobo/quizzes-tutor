@@ -25,9 +25,9 @@ public class StudentStats implements DomainEntity{
     @OneToOne
     private CourseExecution courseExecution;
 
-    public StudentStats(){}
+    public StudentStats() {}
 
-    public StudentStats(TeacherDashboard teacherDashboard, CourseExecution courseExecution){
+    public StudentStats(TeacherDashboard teacherDashboard, CourseExecution courseExecution) {
         this.teacherDashboard = teacherDashboard;
         this.courseExecution = courseExecution;
         this.numAtleats3Quizzes = 0;
@@ -35,7 +35,7 @@ public class StudentStats implements DomainEntity{
         this.numStudents = 0;
     }
 
-    public Integer getId(){
+    public Integer getId() {
         return id;
     }
 
@@ -43,7 +43,7 @@ public class StudentStats implements DomainEntity{
         return numStudents;
     }
 
-    public void setNumStudents(int numStudents){
+    public void setNumStudents(int numStudents) {
         this.numStudents = numStudents;
     }
 
@@ -51,7 +51,7 @@ public class StudentStats implements DomainEntity{
         return teacherDashboard;
     }
 
-    public void setTeacherDashboard(TeacherDashboard teacherDashboard){
+    public void setTeacherDashboard(TeacherDashboard teacherDashboard) {
         this.teacherDashboard = teacherDashboard;
     }
 
@@ -59,7 +59,7 @@ public class StudentStats implements DomainEntity{
         return courseExecution;
     }
 
-    public void setCourseExecution(CourseExecution courseExecution){
+    public void setCourseExecution(CourseExecution courseExecution) {
         this.courseExecution = courseExecution;
     }
 

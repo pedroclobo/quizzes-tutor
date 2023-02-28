@@ -33,6 +33,7 @@ class NumMore75CorrectQuestions extends SpockTest {
         def teacher = new Teacher()
         def teacherDashboard = new TeacherDashboard(courseExecution, teacher)
         def studentStats = new StudentStats(teacherDashboard, courseExecution)
+        studentStats.id = 1
 
         when:
         courseExecution.addUser(student1)
@@ -43,6 +44,7 @@ class NumMore75CorrectQuestions extends SpockTest {
 
         then:
         studentStats.getNumMore75CorrectQuestions() == 1
+        studentStats.getId() == 1
 
         when:
         courseExecution.addUser(student2)

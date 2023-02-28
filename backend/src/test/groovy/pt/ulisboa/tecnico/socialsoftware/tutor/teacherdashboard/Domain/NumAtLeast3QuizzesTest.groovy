@@ -34,6 +34,8 @@ class NumAtLeast3QuizzesTest extends SpockTest {
         def teacher = new Teacher()
         def teacherDashboard = new TeacherDashboard(courseExecution, teacher)
         def studentStats = new StudentStats(teacherDashboard, courseExecution)
+        studentStats.setTeacherDashboard(teacherDashboard)
+        studentStats.setCourseExecution(courseExecution)
 
 
         when:
@@ -46,6 +48,8 @@ class NumAtLeast3QuizzesTest extends SpockTest {
 
         then:
         studentStats.getnumAtleats3Quizzes() == 1
+        studentStats.getTeacherDashboard() == teacherDashboard
+        studentStats.getCourseExecution() == courseExecution
 
         when:
         courseExecution.addUser(student2)

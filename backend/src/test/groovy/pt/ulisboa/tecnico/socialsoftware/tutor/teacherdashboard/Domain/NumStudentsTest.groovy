@@ -44,6 +44,14 @@ class NumStudentsTest extends SpockTest {
 
         then:
         studentStats.getNumStudents() == 0
+        studentStats.toString().equals("StudentStats{" +
+                "id=" + studentStats.getId() +
+                ", courseExecution=" + studentStats.getCourseExecution() +
+                ", teacherDashboard=" + studentStats.getTeacherDashboard() +
+                ", numStudents=" + studentStats.getNumStudents() +
+                ", numMore75CorrectQuestions " + studentStats.getNumMore75CorrectQuestions() +
+                ", numAtleats3Quizzes" + studentStats.getnumAtleats3Quizzes() +
+                '}')
 
         when:
         courseExecution.addUser(student1)
