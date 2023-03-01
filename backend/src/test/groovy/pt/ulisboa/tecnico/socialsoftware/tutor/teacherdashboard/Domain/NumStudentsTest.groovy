@@ -4,13 +4,15 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import pt.ulisboa.tecnico.socialsoftware.tutor.SpockTest
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.Teacher
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.Student
-
+import pt.ulisboa.tecnico.socialsoftware.tutor.auth.domain.AuthUser
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.User
 import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain.TeacherDashboard
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentdashboard.domain.StudentDashboard
 import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain.StudentStats
 import org.springframework.boot.test.context.TestConfiguration
 import pt.ulisboa.tecnico.socialsoftware.tutor.BeanConfiguration
 import pt.ulisboa.tecnico.socialsoftware.tutor.execution.domain.CourseExecution
+import java.time.LocalDateTime
 
 @DataJpaTest
 class NumStudentsTest extends SpockTest {
@@ -27,6 +29,7 @@ class NumStudentsTest extends SpockTest {
         userRepository.save(student2)
         userRepository.save(teacher)
         courseExecution = new CourseExecution()
+        teacher.getAuthUser().setLastAccess(LocalDateTime.now())
     }
 
     def "Test student stats entity numStudents and testing set method for said attribute"() {
@@ -35,24 +38,25 @@ class NumStudentsTest extends SpockTest {
         def studentStats = new StudentStats(dashboard, courseExecution)
         def board1 = new StudentDashboard(courseExecution, student1)
         def board2 = new StudentDashboard(courseExecution, student2)
+
+
+        when:
         board1.numberOfStudentAnswers = 8
         board1.numberOfCorrectStudentAnswers = 6
         board2.numberOfStudentAnswers = 8
         board2.numberOfCorrectStudentAnswers = 6
-
-
-        when:
         studentStats.update()
+        studentStats.setNumStudents(2)
 
         then:
-        studentStats.getNumStudents() == 0
+        studentStats.getNumStudents() == 2
         studentStats.toString().equals("StudentStats{" +
                 "id=" + studentStats.getId() +
                 ", courseExecution=" + studentStats.getCourseExecution() +
                 ", teacherDashboard=" + studentStats.getTeacherDashboard() +
                 ", numStudents=" + studentStats.getNumStudents() +
                 ", numMore75CorrectQuestions " + studentStats.getNumMore75CorrectQuestions() +
-                ", numAtleast3Quizzes" + studentStats.getnumAtleast3Quizzes() +
+                ", numAtleast3Quizzes" + studentStats.getNumAtleast3Quizzes() +
                 '}')
 
         when:

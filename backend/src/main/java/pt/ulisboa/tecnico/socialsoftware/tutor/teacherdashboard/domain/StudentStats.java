@@ -71,22 +71,25 @@ public class StudentStats implements DomainEntity{
         return numMore75CorrectQuestions;
     }
 
-    public void setnumAtleast3Quizzes(int numAtleast3Quizzes) {
+    public void setNumAtleast3Quizzes(int numAtleast3Quizzes) {
         this.numAtleast3Quizzes = numAtleast3Quizzes;
     }
 
-    public int getnumAtleast3Quizzes() {
+    public int getNumAtleast3Quizzes() {
         return numAtleast3Quizzes;
     }
 
     public void update() {
         setNumStudents(courseExecution.getStudents().size());
+        
         setNumMore75CorrectQuestions((int) courseExecution.getStudents()
                 .stream()
-                .filter(student -> (100 * student.getCourseExecutionDashboard(courseExecution).getNumberOfCorrectStudentAnswers()) / 
+                .filter(student -> student.getCourseExecutionDashboard(courseExecution).getNumberOfStudentAnswers() > 0 &&
+                (100 * student.getCourseExecutionDashboard(courseExecution).getNumberOfCorrectStudentAnswers()) / 
                 student.getCourseExecutionDashboard(courseExecution).getNumberOfStudentAnswers() >= 75)
                 .count());
-        setnumAtleast3Quizzes((int) courseExecution.getStudents().stream()
+    
+        setNumAtleast3Quizzes((int) courseExecution.getStudents().stream()
         .filter(student -> student.getCourseExecutionDashboard(courseExecution).getNumberOfStudentQuizzes() >= 3)
         .count());
     }
@@ -103,7 +106,7 @@ public class StudentStats implements DomainEntity{
                 ", teacherDashboard=" + getTeacherDashboard() +
                 ", numStudents=" + getNumStudents() +
                 ", numMore75CorrectQuestions " + getNumMore75CorrectQuestions() +
-                ", numAtleast3Quizzes" + getnumAtleast3Quizzes() +
+                ", numAtleast3Quizzes" + getNumAtleast3Quizzes() +
                 '}';
     }
 }

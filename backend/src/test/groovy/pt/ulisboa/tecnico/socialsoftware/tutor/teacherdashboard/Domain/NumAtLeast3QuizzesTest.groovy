@@ -29,7 +29,7 @@ class NumAtLeast3QuizzesTest extends SpockTest {
         userRepository.save(student3)
     }
 
-    def "Test student stats entity getnumAtleats3Quizzes and testing set method for said attribute"() {
+    def "Test student stats entity numAtleast3Quizzes and testing set method for said attribute"() {
         given:
         def teacher = new Teacher()
         def teacherDashboard = new TeacherDashboard(courseExecution, teacher)
@@ -42,36 +42,34 @@ class NumAtLeast3QuizzesTest extends SpockTest {
         courseExecution.addUser(student1)
         def board1 = new StudentDashboard(courseExecution, student1)
         board1.numberOfStudentQuizzes = 8
-        board1.numberOfCorrectStudentAnswers = 6
+        board1.numberOfCorrectStudentAnswers = 8
         board1.numberOfStudentAnswers = 8
         studentStats.update()
 
         then:
-        studentStats.getnumAtleast3Quizzes() == 1
+        studentStats.getNumAtleast3Quizzes() == 1
         studentStats.getTeacherDashboard() == teacherDashboard
         studentStats.getCourseExecution() == courseExecution
 
         when:
         courseExecution.addUser(student2)
         def board2 = new StudentDashboard(courseExecution, student2)
-        board2.numberOfStudentQuizzes = 12
+        board2.numberOfStudentQuizzes = 4
         board2.numberOfStudentAnswers = 8
         board2.numberOfCorrectStudentAnswers = 6
         studentStats.update()
 
         then:
-        studentStats.getnumAtleast3Quizzes() == 2
+        studentStats.getNumAtleast3Quizzes() == 2
 
         when:
         courseExecution.addUser(student3)
         def board3 = new StudentDashboard(courseExecution, student3)
-        board3.numberOfStudentAnswers = 8
-        board3.numberOfCorrectStudentAnswers = 6
-        board3.numberOfStudentQuizzes = 1
+        board3.numberOfStudentQuizzes = 4
         studentStats.update()
 
         then:
-        studentStats.getnumAtleast3Quizzes() == 2
+        studentStats.getNumAtleast3Quizzes() == 3
     }
     @TestConfiguration
     static class LocalBeanConfiguration extends BeanConfiguration {}
