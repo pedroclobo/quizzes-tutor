@@ -17,7 +17,7 @@ public class StudentStats implements DomainEntity{
 
     private int numMore75CorrectQuestions;
 
-    private int numAtleats3Quizzes;
+    private int numAtleast3Quizzes;
 
     @ManyToOne
     private TeacherDashboard teacherDashboard;
@@ -30,7 +30,7 @@ public class StudentStats implements DomainEntity{
     public StudentStats(TeacherDashboard teacherDashboard, CourseExecution courseExecution) {
         this.teacherDashboard = teacherDashboard;
         this.courseExecution = courseExecution;
-        this.numAtleats3Quizzes = 0;
+        this.numAtleast3Quizzes = 0;
         this.numMore75CorrectQuestions = 0;
         this.numStudents = 0;
     }
@@ -71,12 +71,12 @@ public class StudentStats implements DomainEntity{
         return numMore75CorrectQuestions;
     }
 
-    public void setnumAtleats3Quizzes(int numAtleats3Quizzes) {
-        this.numAtleats3Quizzes = numAtleats3Quizzes;
+    public void setnumAtleast3Quizzes(int numAtleast3Quizzes) {
+        this.numAtleast3Quizzes = numAtleast3Quizzes;
     }
 
-    public int getnumAtleats3Quizzes() {
-        return numAtleats3Quizzes;
+    public int getnumAtleast3Quizzes() {
+        return numAtleast3Quizzes;
     }
 
     public void update() {
@@ -86,7 +86,7 @@ public class StudentStats implements DomainEntity{
                 .filter(student -> (100 * student.getCourseExecutionDashboard(courseExecution).getNumberOfCorrectStudentAnswers()) / 
                 student.getCourseExecutionDashboard(courseExecution).getNumberOfStudentAnswers() >= 75)
                 .count());
-        setnumAtleats3Quizzes((int) courseExecution.getStudents().stream()
+        setnumAtleast3Quizzes((int) courseExecution.getStudents().stream()
         .filter(student -> student.getCourseExecutionDashboard(courseExecution).getNumberOfStudentQuizzes() >= 3)
         .count());
     }
@@ -98,12 +98,12 @@ public class StudentStats implements DomainEntity{
     @Override
     public String toString() {
         return "StudentStats{" +
-                "id=" + id +
-                ", courseExecution=" + courseExecution +
-                ", teacherDashboard=" + teacherDashboard +
-                ", numStudents=" + numStudents +
-                ", numMore75CorrectQuestions " + numMore75CorrectQuestions +
-                ", numAtleats3Quizzes" + numAtleats3Quizzes +
+                "id=" + getId() +
+                ", courseExecution=" + getCourseExecution() +
+                ", teacherDashboard=" + getTeacherDashboard() +
+                ", numStudents=" + getNumStudents() +
+                ", numMore75CorrectQuestions " + getNumMore75CorrectQuestions() +
+                ", numAtleast3Quizzes" + getnumAtleast3Quizzes() +
                 '}';
     }
 }

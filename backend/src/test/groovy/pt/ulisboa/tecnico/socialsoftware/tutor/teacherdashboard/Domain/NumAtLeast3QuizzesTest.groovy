@@ -47,7 +47,7 @@ class NumAtLeast3QuizzesTest extends SpockTest {
         studentStats.update()
 
         then:
-        studentStats.getnumAtleats3Quizzes() == 1
+        studentStats.getnumAtleast3Quizzes() == 1
         studentStats.getTeacherDashboard() == teacherDashboard
         studentStats.getCourseExecution() == courseExecution
 
@@ -60,7 +60,7 @@ class NumAtLeast3QuizzesTest extends SpockTest {
         studentStats.update()
 
         then:
-        studentStats.getnumAtleats3Quizzes() == 2
+        studentStats.getnumAtleast3Quizzes() == 2
 
         when:
         courseExecution.addUser(student3)
@@ -71,7 +71,7 @@ class NumAtLeast3QuizzesTest extends SpockTest {
         studentStats.update()
 
         then:
-        studentStats.getnumAtleats3Quizzes() == 2
+        studentStats.getnumAtleast3Quizzes() == 2
     }
     @TestConfiguration
     static class LocalBeanConfiguration extends BeanConfiguration {}

@@ -16,19 +16,21 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.execution.domain.CourseExecution
 class NumStudentsTest extends SpockTest {
     def student1
     def student2
-    def courseExecution;
+    def courseExecution
+    def teacher
 
     def setup() {
-        student1 = new Student(USER_1_NAME, false)
-        student2 = new Student(USER_2_NAME, false)
+        student1 = new Student(USER_1_NAME, USER_1_USERNAME, USER_1_EMAIL, false, AuthUser.Type.TECNICO)
+        student2 = new Student(USER_2_NAME, USER_2_USERNAME, USER_2_EMAIL, false, AuthUser.Type.TECNICO)
+        teacher = new Teacher(USER_3_NAME, USER_3_USERNAME, USER_3_EMAIL, false, AuthUser.Type.TECNICO)
         userRepository.save(student1)
         userRepository.save(student2)
+        userRepository.save(teacher)
         courseExecution = new CourseExecution()
     }
 
     def "Test student stats entity numStudents and testing set method for said attribute"() {
         given:
-        def teacher = new Teacher()
         def dashboard = new TeacherDashboard(courseExecution, teacher)
         def studentStats = new StudentStats(dashboard, courseExecution)
         def board1 = new StudentDashboard(courseExecution, student1)
@@ -50,7 +52,7 @@ class NumStudentsTest extends SpockTest {
                 ", teacherDashboard=" + studentStats.getTeacherDashboard() +
                 ", numStudents=" + studentStats.getNumStudents() +
                 ", numMore75CorrectQuestions " + studentStats.getNumMore75CorrectQuestions() +
-                ", numAtleats3Quizzes" + studentStats.getnumAtleats3Quizzes() +
+                ", numAtleast3Quizzes" + studentStats.getnumAtleast3Quizzes() +
                 '}')
 
         when:
