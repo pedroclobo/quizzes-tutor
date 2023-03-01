@@ -3,49 +3,33 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain;
 import pt.ulisboa.tecnico.socialsoftware.tutor.execution.domain.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.DomainEntity;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
-import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.Teacher;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.persistence.*;
 
-
 @Entity
-public class TeacherDashboard implements DomainEntity {
+public class QuestionStats implements DomainEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
+    @OneToOne
     private CourseExecution courseExecution;
 
     @ManyToOne
-    private Teacher teacher;
+    private TeacherDashboard teacherDashboard;
 
-    @OneToMany
-    private List<QuestionStats> questionStats = new ArrayList<>();
-
-    public TeacherDashboard() {
+    public QuestionStats() {
     }
 
-    public TeacherDashboard(CourseExecution courseExecution, Teacher teacher) {
+    public QuestionStats(CourseExecution courseExecution, TeacherDashboard teacherDashboard) {
         setCourseExecution(courseExecution);
-        setTeacher(teacher);
-    }
-
-    public List<QuestionStats> getQuestionStats() {
-        return questionStats;
-    }
-
-    public void addQuestionStats(QuestionStats questionStats) {
-        this.questionStats.add(questionStats);
+        setTeacherDashboard(teacherDashboard);
     }
 
     public void remove() {
-        teacher.getDashboards().remove(this);
-        teacher = null;
+        teacherDashboard.getQuestionStats().remove(this);
+        teacherDashboard = null;
     }
 
     public Integer getId() {
@@ -60,13 +44,13 @@ public class TeacherDashboard implements DomainEntity {
         this.courseExecution = courseExecution;
     }
 
-    public Teacher getTeacher() {
-        return teacher;
+    public TeacherDashboard getTeacherDashnoard() {
+        return teacherDashboard;
     }
 
-    public void setTeacher(Teacher teacher) {
-        this.teacher = teacher;
-        this.teacher.addDashboard(this);
+    public void setTeacherDashboard(TeacherDashboard teacherDashboard) {
+        this.teacherDashboard = teacherDashboard;
+        this.teacherDashboard.addQuestionStats(this);
     }
 
     public void accept(Visitor visitor) {
@@ -75,10 +59,10 @@ public class TeacherDashboard implements DomainEntity {
 
     @Override
     public String toString() {
-        return "Dashboard{" +
+        return "QuestionStats{" +
                 "id=" + id +
                 ", courseExecution=" + courseExecution +
-                ", teacher=" + teacher +
+                ", teacherDashboard=" + teacherDashboard +
                 '}';
     }
 
