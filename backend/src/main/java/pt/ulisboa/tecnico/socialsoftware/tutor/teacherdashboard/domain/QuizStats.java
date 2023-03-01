@@ -20,6 +20,7 @@ public class QuizStats implements DomainEntity {
     private TeacherDashboard teacherDashboard;
 
     private int numQuizzes;
+    private int uniqueQuizzesSolved;
 
     public QuizStats() {
     }
@@ -63,6 +64,14 @@ public class QuizStats implements DomainEntity {
         this.numQuizzes = numQuizzes;
     }
 
+    public int getUniqueQuizzesSolved() {
+        return uniqueQuizzesSolved;
+    }
+
+    public void setUniqueQuizzesSolved(int uniqueQuizzesSolved) {
+        this.uniqueQuizzesSolved = uniqueQuizzesSolved;
+    }
+
     public void accept(Visitor visitor) {
         // Only used for XML generation
     }
@@ -71,8 +80,16 @@ public class QuizStats implements DomainEntity {
         setNumQuizzes(courseExecution.getNumberOfQuizzes());
     }
 
+    public void updateUniqueQuizzesSolved() {
+        setUniqueQuizzesSolved((int) courseExecution.getQuizzes()
+                               .stream()
+                               .filter(quiz -> !quiz.getQuizAnswers().isEmpty())
+                               .count());
+    }
+
     public void update() {
         updateNumQuizzes();
+        updateUniqueQuizzesSolved();
     }
 
     @Override
@@ -82,6 +99,7 @@ public class QuizStats implements DomainEntity {
                 ", courseExecution=" + courseExecution +
                 ", teacherDashboard=" + teacherDashboard +
                 ", numQuizzes=" + numQuizzes +
+                ", uniqueQuizzesSolved=" + uniqueQuizzesSolved +
                 '}';
     }
 
