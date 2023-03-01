@@ -80,7 +80,7 @@ public class StudentStats implements DomainEntity{
     }
 
     public void update() {
-        setNumStudents(courseExecution.getStudents().size());
+        setNumStudents(courseExecution.getNumberOfActiveStudents());
         
         setNumMore75CorrectQuestions((int) courseExecution.getStudents()
                 .stream()
@@ -90,8 +90,8 @@ public class StudentStats implements DomainEntity{
                 .count());
     
         setNumAtleast3Quizzes((int) courseExecution.getStudents().stream()
-        .filter(student -> student.getCourseExecutionDashboard(courseExecution).getNumberOfStudentQuizzes() >= 3)
-        .count());
+            .filter(student -> student.getCourseExecutionDashboard(courseExecution).getNumberOfStudentQuizzes() >= 3)
+            .count());
     }
 
     public void accept(Visitor visitor) {

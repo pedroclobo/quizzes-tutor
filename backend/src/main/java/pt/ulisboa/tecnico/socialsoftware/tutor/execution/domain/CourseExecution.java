@@ -52,7 +52,7 @@ public class CourseExecution implements DomainEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "courseExecution", orphanRemoval = true)
     private final Set<DifficultQuestion> difficultQuestions = new HashSet<>();
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     private StudentStats studentStats;
 
     @Id

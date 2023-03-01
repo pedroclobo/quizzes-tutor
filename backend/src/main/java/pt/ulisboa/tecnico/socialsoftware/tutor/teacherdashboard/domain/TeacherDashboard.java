@@ -25,7 +25,7 @@ public class TeacherDashboard implements DomainEntity {
     private Teacher teacher;
 
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "teacherDashboard", orphanRemoval = true)
+    @OneToMany(mappedBy = "teacherDashboard")
     private List<StudentStats> studentStats = new ArrayList<>();
 
     public TeacherDashboard() {
