@@ -44,7 +44,7 @@ public class QuestionStats implements DomainEntity {
         this.courseExecution = courseExecution;
     }
 
-    public TeacherDashboard getTeacherDashnoard() {
+    public TeacherDashboard getTeacherDashboard() {
         return teacherDashboard;
     }
 
