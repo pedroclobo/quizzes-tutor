@@ -19,6 +19,8 @@ public class QuestionStats implements DomainEntity {
     @ManyToOne
     private TeacherDashboard teacherDashboard;
 
+    private int numAvailable;
+
     public QuestionStats() {
     }
 
@@ -53,8 +55,24 @@ public class QuestionStats implements DomainEntity {
         this.teacherDashboard.addQuestionStats(this);
     }
 
+    public int getNumAvailable() {
+        return numAvailable;
+    }
+
+    public void setNumAvailable(int numAvailable) {
+        this.numAvailable = numAvailable;
+    }
+
+    public void updateNumAvailable() {
+       setNumAvailable(courseExecution.getNumberOfQuestions());
+    }
+
     public void accept(Visitor visitor) {
         // Only used for XML generation
+    }
+
+    public void update() {
+        updateNumAvailable();
     }
 
     @Override
@@ -63,6 +81,7 @@ public class QuestionStats implements DomainEntity {
                 "id=" + id +
                 ", courseExecution=" + courseExecution +
                 ", teacherDashboard=" + teacherDashboard +
+                ", numAvailable=" + numAvailable +
                 '}';
     }
 
