@@ -19,6 +19,8 @@ public class QuizStats implements DomainEntity {
     @ManyToOne
     private TeacherDashboard teacherDashboard;
 
+    private int numQuizzes;
+
     public QuizStats() {
     }
 
@@ -53,12 +55,24 @@ public class QuizStats implements DomainEntity {
         this.teacherDashboard.addQuizStats(this);
     }
 
+    public int getNumQuizzes() {
+        return numQuizzes;
+    }
+
+    public void setNumQuizzes(int numQuizzes) {
+        this.numQuizzes = numQuizzes;
+    }
+
     public void accept(Visitor visitor) {
         // Only used for XML generation
     }
 
-    public void update() {
+    public void updateNumQuizzes() {
+        setNumQuizzes(courseExecution.getNumberOfQuizzes());
+    }
 
+    public void update() {
+        updateNumQuizzes();
     }
 
     @Override
@@ -67,6 +81,7 @@ public class QuizStats implements DomainEntity {
                 "id=" + id +
                 ", courseExecution=" + courseExecution +
                 ", teacherDashboard=" + teacherDashboard +
+                ", numQuizzes=" + numQuizzes +
                 '}';
     }
 

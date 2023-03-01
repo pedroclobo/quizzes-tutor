@@ -74,7 +74,9 @@ public class TeacherDashboard implements DomainEntity {
     }
 
     public void update() {
-
+        for (QuizStats quizStats : quizStats) {
+            quizStats.update();
+        }
     }
 
     @Override
