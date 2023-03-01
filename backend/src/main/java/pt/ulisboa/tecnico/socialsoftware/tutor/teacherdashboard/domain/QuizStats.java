@@ -3,6 +3,12 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain;
 import pt.ulisboa.tecnico.socialsoftware.tutor.execution.domain.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.DomainEntity;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
+import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer;
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.Student;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.*;
 
@@ -21,6 +27,7 @@ public class QuizStats implements DomainEntity {
 
     private int numQuizzes;
     private int uniqueQuizzesSolved;
+    private float averageQuizzesSolved;
 
     public QuizStats() {
     }
@@ -72,6 +79,14 @@ public class QuizStats implements DomainEntity {
         this.uniqueQuizzesSolved = uniqueQuizzesSolved;
     }
 
+    public float getAverageQuizzesSolved() {
+        return averageQuizzesSolved;
+    }
+
+    public void setAverageQuizzesSolved(float averageQuizzesSolved) {
+        this.averageQuizzesSolved = averageQuizzesSolved;
+    }
+
     public void accept(Visitor visitor) {
         // Only used for XML generation
     }
@@ -87,9 +102,36 @@ public class QuizStats implements DomainEntity {
                                .count());
     }
 
+    public void updateAverageQuizzesSolved() {
+        int numAnswers = 0;
+        Set<Student> students = courseExecution.getStudents();
+        Set<Quiz> uniqueQuizzes = new HashSet<>();
+
+        for (Student student : students) {
+            Set<QuizAnswer> quizAnswers = student.getQuizAnswers();
+            for (QuizAnswer quizAnswer : quizAnswers) {
+                Quiz quiz = quizAnswer.getQuiz();
+                if (!uniqueQuizzes.contains(quiz)) {
+                    uniqueQuizzes.add(quiz);
+                }
+            }
+            numAnswers += uniqueQuizzes.size();
+            uniqueQuizzes.clear();
+        }
+
+        int numStudents = students.size();
+
+        if (numStudents == 0) {
+            setAverageQuizzesSolved(0);
+        } else {
+            setAverageQuizzesSolved((float) numAnswers / numStudents);
+        }
+    }
+
     public void update() {
         updateNumQuizzes();
         updateUniqueQuizzesSolved();
+		updateAverageQuizzesSolved();
     }
 
     @Override
@@ -100,6 +142,7 @@ public class QuizStats implements DomainEntity {
                 ", teacherDashboard=" + teacherDashboard +
                 ", numQuizzes=" + numQuizzes +
                 ", uniqueQuizzesSolved=" + uniqueQuizzesSolved +
+                ", averageQuizzesSolved=" + averageQuizzesSolved +
                 '}';
     }
 
