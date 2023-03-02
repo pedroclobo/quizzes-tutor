@@ -79,7 +79,16 @@ public class QuestionStats implements DomainEntity {
     }
 
     public void updateNumAvailable() {
-       setNumAvailable(courseExecution.getNumberOfQuestions());
+        Set<Question> questions = courseExecution.getCourse().getQuestions();
+        int numAvailable = 0;
+        
+        for (Question question : questions) {
+            if (question.getStatus() == Question.Status.AVAILABLE) {
+                numAvailable++;
+            }
+        }
+
+        setNumAvailable(numAvailable);
     }
 
     public void updateAverageQuestionsAnswered() {
