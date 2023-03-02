@@ -218,11 +218,11 @@ public class CourseExecution implements DomainEntity {
         difficultQuestions.add(difficultQuestion);
     }
 
-    public QuestionStats getquestionStats() {
+    public QuestionStats getQuestionStats() {
         return questionStats;
     }
 
-    public void setquestionStats(QuestionStats questionStats) {
+    public void setQuestionStats(QuestionStats questionStats) {
         this.questionStats = questionStats;
         questionStats.setCourseExecution(this);
     }
