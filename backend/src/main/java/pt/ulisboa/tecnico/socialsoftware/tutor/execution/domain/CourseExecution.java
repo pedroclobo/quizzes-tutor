@@ -16,6 +16,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.Student;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.Teacher;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.User;
+import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain.QuizStats;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -54,6 +55,9 @@ public class CourseExecution implements DomainEntity {
 
     @OneToOne(cascade = CascadeType.REMOVE)
     private StudentStats studentStats;
+
+    @OneToOne(cascade = CascadeType.REMOVE)
+    private QuizStats quizStats;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -225,6 +229,15 @@ public class CourseExecution implements DomainEntity {
             throw new TutorException(ErrorMessage.DIFFICULT_QUESTION_ALREADY_CREATED);
         }
         difficultQuestions.add(difficultQuestion);
+    }
+
+    public QuizStats getQuizStats() {
+        return quizStats;
+    }
+
+    public void setQuizStats(QuizStats quizStats) {
+        this.quizStats = quizStats;
+        quizStats.setCourseExecution(this);
     }
 
     @Override

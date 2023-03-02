@@ -51,6 +51,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserService
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.repository.UserRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.utils.DateHandler
 import pt.ulisboa.tecnico.socialsoftware.tutor.utils.Mailer
+import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.repository.QuizStatsRepository
 import spock.lang.Shared
 import spock.lang.Specification
 import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.repository.StudentStatsRepository
@@ -300,6 +301,9 @@ class SpockTest extends Specification {
 
     @Autowired
     StudentStatsRepository studentStatsRepository
+
+    @Autowired
+    QuizStatsRepository quizStatsRepository
 
     Course externalCourse
     @Shared

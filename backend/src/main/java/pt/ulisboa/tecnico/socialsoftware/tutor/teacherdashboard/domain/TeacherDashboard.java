@@ -24,9 +24,11 @@ public class TeacherDashboard implements DomainEntity {
     @ManyToOne
     private Teacher teacher;
 
-
     @OneToMany(mappedBy = "teacherDashboard")
     private List<StudentStats> studentStats = new ArrayList<>();
+
+    @OneToMany(mappedBy = "teacherDashboard")
+    private List<QuizStats> quizStats = new ArrayList<>();
 
     public TeacherDashboard() {
     }
@@ -62,11 +64,26 @@ public class TeacherDashboard implements DomainEntity {
         this.teacher.addDashboard(this);
     }
 
+    public List<QuizStats> getQuizStats() {
+        return quizStats;
+    }
+
+    public void addQuizStats(QuizStats quizStats) {
+        this.quizStats.add(quizStats);
+    }
+
     public void accept(Visitor visitor) {
         // Only used for XML generation
     }
 
-
+    public void update() {
+        for (QuizStats quizStats : quizStats) {
+            quizStats.update();
+        }
+        for (studentStats studentStats : studentStats) {
+            studentStats.update();
+        }
+    }
 
     @Override
     public String toString() {
