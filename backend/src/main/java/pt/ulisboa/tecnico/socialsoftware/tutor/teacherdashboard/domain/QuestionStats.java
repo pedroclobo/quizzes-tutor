@@ -9,6 +9,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.Student;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Arrays;
 
 import javax.persistence.*;
 
@@ -26,6 +27,7 @@ public class QuestionStats implements DomainEntity {
     private TeacherDashboard teacherDashboard;
 
     private int numAvailable;
+    private int uniqueQuestionsAnswered;
     private float averageQuestionsAnswered;
 
     public QuestionStats() {
@@ -70,6 +72,14 @@ public class QuestionStats implements DomainEntity {
         this.numAvailable = numAvailable;
     }
 
+    public int getUniqueQuestionsAnswered() {
+        return uniqueQuestionsAnswered;
+    }
+
+    public void setUniqueQuestionsAnswered(int uniqueQuestionsAnswered) {
+        this.uniqueQuestionsAnswered = uniqueQuestionsAnswered;
+    }
+
     public float getAverageQuestionsAnswered() {
         return averageQuestionsAnswered;
     }
@@ -89,6 +99,18 @@ public class QuestionStats implements DomainEntity {
         }
 
         setNumAvailable(numAvailable);
+    }
+
+    public void updateUniqueQuestionsAnswered() {
+        int numQuestions = (int) courseExecution.getQuestionSubmissions()
+                                    .stream()
+                                    .map(qSubm -> Arrays.asList(qSubm.getQuestion(), qSubm.getSubmitter()))
+                                    .distinct()
+                                    .map(question -> question.get(0))
+                                    .distinct()
+                                    .count();
+        
+        setUniqueQuestionsAnswered(numQuestions);
     }
 
     public void updateAverageQuestionsAnswered() {
@@ -124,6 +146,7 @@ public class QuestionStats implements DomainEntity {
 
     public void update() {
         updateNumAvailable();
+        updateUniqueQuestionsAnswered();
         updateAverageQuestionsAnswered();
     }
 
@@ -134,6 +157,7 @@ public class QuestionStats implements DomainEntity {
                 ", courseExecution=" + courseExecution +
                 ", teacherDashboard=" + teacherDashboard +
                 ", numAvailable=" + numAvailable +
+                ", uniqueQuestionsAnswered=" + uniqueQuestionsAnswered +
                 ", averageQuestionsAnswered=" + averageQuestionsAnswered +
                 '}';
     }
