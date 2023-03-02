@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.execution.domain;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentdashboard.domain.DifficultQuestion;
+import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain.StudentStats;
 import pt.ulisboa.tecnico.socialsoftware.tutor.discussion.domain.Discussion;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
@@ -16,6 +17,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.Student;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.Teacher;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.User;
 import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain.QuestionStats;
+import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain.QuizStats;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -54,6 +56,12 @@ public class CourseExecution implements DomainEntity {
 
     @OneToOne(cascade = CascadeType.REMOVE)
     private QuestionStats questionStats;
+
+    @OneToOne(cascade = CascadeType.REMOVE)
+    private StudentStats studentStats;
+
+    @OneToOne(cascade = CascadeType.REMOVE)
+    private QuizStats quizStats;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -122,6 +130,15 @@ public class CourseExecution implements DomainEntity {
             throw new TutorException(INVALID_ACRONYM_FOR_COURSE_EXECUTION);
         }
         this.acronym = acronym;
+    }
+
+    public StudentStats getStudentStats() {
+        return studentStats;
+    }
+
+    public void setStudentStats(StudentStats studentStats) {
+        this.studentStats = studentStats;
+        studentStats.setCourseExecution(this);
     }
 
     public String getAcademicTerm() {
@@ -227,6 +244,15 @@ public class CourseExecution implements DomainEntity {
         questionStats.setCourseExecution(this);
     }
 
+    public QuizStats getQuizStats() {
+        return quizStats;
+    }
+
+    public void setQuizStats(QuizStats quizStats) {
+        this.quizStats = quizStats;
+        quizStats.setCourseExecution(this);
+    }
+
     @Override
     public String toString() {
         return "CourseExecution{" +
@@ -260,6 +286,7 @@ public class CourseExecution implements DomainEntity {
                 .count();
     }
 
+
     public int getNumberofInactiveTeachers() {
         return (int) this.users.stream()
                 .filter(user ->
@@ -282,6 +309,7 @@ public class CourseExecution implements DomainEntity {
                                 (user.getAuthUser() == null || !user.getAuthUser().isActive()))
                 .count();
     }
+
 
     public int getNumberOfQuizzes() {
         return this.quizzes.size();
