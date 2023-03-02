@@ -80,7 +80,7 @@ public class TeacherDashboard implements DomainEntity {
         for (QuizStats quizStats : quizStats) {
             quizStats.update();
         }
-        for (studentStats studentStats : studentStats) {
+        for (StudentStats studentStats : studentStats) {
             studentStats.update();
         }
     }
