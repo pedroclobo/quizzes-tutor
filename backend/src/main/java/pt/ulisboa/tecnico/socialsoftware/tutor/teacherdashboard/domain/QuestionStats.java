@@ -3,6 +3,12 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain;
 import pt.ulisboa.tecnico.socialsoftware.tutor.execution.domain.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.DomainEntity;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
+import pt.ulisboa.tecnico.socialsoftware.tutor.questionsubmission.domain.QuestionSubmission;
+import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.Student;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.*;
 
@@ -20,6 +26,7 @@ public class QuestionStats implements DomainEntity {
     private TeacherDashboard teacherDashboard;
 
     private int numAvailable;
+    private float averageQuestionsAnswered;
 
     public QuestionStats() {
     }
@@ -63,9 +70,44 @@ public class QuestionStats implements DomainEntity {
         this.numAvailable = numAvailable;
     }
 
+    public float getAverageQuestionsAnswered() {
+        return averageQuestionsAnswered;
+    }
+
+    public void setAverageQuestionsAnswered(float averageQuestionsAnswered) {
+        this.averageQuestionsAnswered = averageQuestionsAnswered;
+    }
+
     public void updateNumAvailable() {
        setNumAvailable(courseExecution.getNumberOfQuestions());
     }
+
+    public void updateAverageQuestionsAnswered() {
+        int numAnswers = 0;
+        Set<Student> students = courseExecution.getStudents();
+        Set<Question> uniqueQuestions = new HashSet<>();
+
+        for (Student student : students) {
+            Set<QuestionSubmission> questionSubmissions = student.getQuestionSubmissions();
+            for (QuestionSubmission questionSubmission : questionSubmissions) {
+                Question question = questionSubmission.getQuestion();
+                if (!uniqueQuestions.contains(question)) {
+                    uniqueQuestions.add(question);
+                }
+            }
+            numAnswers += uniqueQuestions.size();
+            uniqueQuestions.clear();
+        }
+
+        int numStudents = students.size();
+
+        if (numStudents == 0) {
+            setAverageQuestionsAnswered(0);
+        } else {
+            setAverageQuestionsAnswered((float) numAnswers / numStudents);
+        }
+    }
+
 
     public void accept(Visitor visitor) {
         // Only used for XML generation
@@ -73,6 +115,7 @@ public class QuestionStats implements DomainEntity {
 
     public void update() {
         updateNumAvailable();
+        updateAverageQuestionsAnswered();
     }
 
     @Override
@@ -82,6 +125,7 @@ public class QuestionStats implements DomainEntity {
                 ", courseExecution=" + courseExecution +
                 ", teacherDashboard=" + teacherDashboard +
                 ", numAvailable=" + numAvailable +
+                ", averageQuestionsAnswered=" + averageQuestionsAnswered +
                 '}';
     }
 
