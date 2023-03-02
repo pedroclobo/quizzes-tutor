@@ -17,7 +17,7 @@ public class StudentStats implements DomainEntity{
 
     private int numMore75CorrectQuestions;
 
-    private int numAtleast3Quizzes;
+    private int numAtLeast3Quizzes;
 
     @ManyToOne
     private TeacherDashboard teacherDashboard;
@@ -30,7 +30,7 @@ public class StudentStats implements DomainEntity{
     public StudentStats(TeacherDashboard teacherDashboard, CourseExecution courseExecution) {
         this.teacherDashboard = teacherDashboard;
         this.courseExecution = courseExecution;
-        this.numAtleast3Quizzes = 0;
+        this.numAtLeast3Quizzes = 0;
         this.numMore75CorrectQuestions = 0;
         this.numStudents = 0;
     }
@@ -71,12 +71,12 @@ public class StudentStats implements DomainEntity{
         return numMore75CorrectQuestions;
     }
 
-    public void setNumAtleast3Quizzes(int numAtleast3Quizzes) {
-        this.numAtleast3Quizzes = numAtleast3Quizzes;
+    public void setNumAtLeast3Quizzes(int numAtLeast3Quizzes) {
+        this.numAtLeast3Quizzes = numAtLeast3Quizzes;
     }
 
-    public int getNumAtleast3Quizzes() {
-        return numAtleast3Quizzes;
+    public int getNumAtLeast3Quizzes() {
+        return numAtLeast3Quizzes;
     }
 
     public void update() {
@@ -89,7 +89,7 @@ public class StudentStats implements DomainEntity{
                 student.getCourseExecutionDashboard(courseExecution).getNumberOfStudentAnswers() >= 75)
                 .count());
     
-        setNumAtleast3Quizzes((int) courseExecution.getStudents().stream()
+        setNumAtLeast3Quizzes((int) courseExecution.getStudents().stream()
             .filter(student -> student.getCourseExecutionDashboard(courseExecution).getNumberOfStudentQuizzes() >= 3)
             .count());
     }
@@ -106,7 +106,7 @@ public class StudentStats implements DomainEntity{
                 ", teacherDashboard=" + getTeacherDashboard() +
                 ", numStudents=" + getNumStudents() +
                 ", numMore75CorrectQuestions " + getNumMore75CorrectQuestions() +
-                ", numAtleast3Quizzes" + getNumAtleast3Quizzes() +
+                ", numAtLeast3Quizzes" + getNumAtLeast3Quizzes() +
                 '}';
     }
 }

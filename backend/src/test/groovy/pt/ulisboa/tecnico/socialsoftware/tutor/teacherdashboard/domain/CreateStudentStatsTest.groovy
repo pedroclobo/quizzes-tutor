@@ -48,7 +48,7 @@ class CreateStudentStatsTest extends SpockTest {
                 ", teacherDashboard=" + result.getTeacherDashboard() +
                 ", numStudents=" + result.getNumStudents() +
                 ", numMore75CorrectQuestions " + result.getNumMore75CorrectQuestions() +
-                ", numAtleast3Quizzes" + result.getNumAtleast3Quizzes() +
+                ", numAtLeast3Quizzes" + result.getNumAtLeast3Quizzes() +
                 '}'
     }
 
