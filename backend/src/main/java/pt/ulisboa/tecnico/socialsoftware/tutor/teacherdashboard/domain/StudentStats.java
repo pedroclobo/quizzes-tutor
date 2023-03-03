@@ -28,7 +28,7 @@ public class StudentStats implements DomainEntity{
     public StudentStats() {}
 
     public StudentStats(TeacherDashboard teacherDashboard, CourseExecution courseExecution) {
-        this.teacherDashboard = teacherDashboard;
+        setTeacherDashboard(teacherDashboard);
         this.courseExecution = courseExecution;
         this.numAtLeast3Quizzes = 0;
         this.numMore75CorrectQuestions = 0;
@@ -53,6 +53,7 @@ public class StudentStats implements DomainEntity{
 
     public void setTeacherDashboard(TeacherDashboard teacherDashboard) {
         this.teacherDashboard = teacherDashboard;
+        this.teacherDashboard.addStudentStats(this);
     }
 
     public CourseExecution getCourseExecution() {
