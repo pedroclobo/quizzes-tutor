@@ -13,6 +13,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.repository.Teach
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.Teacher;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.repository.TeacherRepository;
 
+
 import java.util.*;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
@@ -81,4 +82,12 @@ public class TeacherDashboardService {
         teacherDashboardRepository.delete(teacherDashboard);
     }
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public void updateAllTeacherDashboards() {
+        List<TeacherDashboard> dashboards = teacherDashboardRepository.findAll();
+        
+        for(TeacherDashboard dashboard : dashboards) {
+        //    updateTeacherDashboard(dashboard.getId());
+        }
+    } 
 }
