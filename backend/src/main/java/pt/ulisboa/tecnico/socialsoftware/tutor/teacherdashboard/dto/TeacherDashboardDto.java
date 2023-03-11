@@ -7,9 +7,12 @@ import java.util.List;
 
 
 public class TeacherDashboardDto {
+
     private Integer id;
     private Integer numberOfStudents;
     private List<Integer> numOfStudents;
+    private List<Integer> numMore75CorrectQuestions;
+    private List<Integer> numAtLeast3Quizzes;
     
     public TeacherDashboardDto() {
     }
@@ -21,6 +24,14 @@ public class TeacherDashboardDto {
 
         this.numOfStudents = teacherDashboard.getStudentStats().stream()
         .map(StudentStats::getNumStudents)
+        .collect(Collectors.toList());
+
+        this.numMore75CorrectQuestions = teacherDashboard.getStudentStats().stream()
+        .map(StudentStats::getNumMore75CorrectQuestions)
+        .collect(Collectors.toList());
+
+        this.numAtLeast3Quizzes = teacherDashboard.getStudentStats().stream()
+        .map(StudentStats::getNumAtLeast3Quizzes)
         .collect(Collectors.toList());
     }
 
@@ -48,12 +59,30 @@ public class TeacherDashboardDto {
         this.numberOfStudents = numberOfStudents;
     }
 
+    public void setNumMore75CorrectQuestions(List<Integer> newNumMore75CorrectQuestions) {
+        this.numMore75CorrectQuestions = newNumMore75CorrectQuestions;
+    }
+
+    public List<Integer> getNumMore75CorrectQuestions() {
+        return numMore75CorrectQuestions;
+    }
+
+    public void setNumAtLeast3Quizzes(List<Integer> numAtLeast3Quizzes) {
+        this.numAtLeast3Quizzes = numAtLeast3Quizzes;
+    }
+
+    public List<Integer> getNumAtLeast3Quizzes() {
+        return numAtLeast3Quizzes;
+    }
+
     @Override
     public String toString() {
         return "TeacherDashboardDto{" +
                 "id=" + id +
                 ", numberOfStudents=" + this.getNumberOfStudents() +
                 ", numOfStudents=" + this.getNumOfStudents() +
+                ", numMore75CorrectQuestions=" + this.getNumMore75CorrectQuestions() +
+                ", numAtLeast3Quizzes=" + this.getNumAtLeast3Quizzes() +
                 "}";
     }
 }
