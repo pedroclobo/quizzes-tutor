@@ -92,6 +92,26 @@ import spock.lang.Unroll
         teacherId << [0, 100]
     }
 
+    def "create a dashboard with the teacher associated to one course execution"() {
+        expect:
+        false
+    }
+
+    def "create a dashboard with the teacher associated to two course executions"() {
+        expect:
+        false
+    }
+
+    def "create a dashboard with the teacher associated with three course executions"() {
+        expect:
+        false
+    }
+
+    def "create a dashboard with the teacher associated with five course executions"() {
+        expect:
+        false
+    }
+
     @TestConfiguration
     static class LocalBeanConfiguration extends BeanConfiguration {}
 }
