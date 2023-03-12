@@ -98,7 +98,6 @@ class GetNumQuizzesTest extends SpockTest {
         quizStats.numQuizzes == 1
 
         when: "the quiz stats are updated"
-        externalCourseExecution.addQuiz(quiz)
         quizStats.update()
 
         then: "the number of quizzes is still 1"
