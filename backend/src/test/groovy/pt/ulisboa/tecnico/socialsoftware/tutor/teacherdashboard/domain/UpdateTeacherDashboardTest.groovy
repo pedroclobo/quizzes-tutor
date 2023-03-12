@@ -28,7 +28,7 @@ class UpdateTeacherDashboardTest extends SpockTest {
         quizStats = new QuizStats(externalCourseExecution, teacherDashboard)
         quizStatsRepository.save(quizStats)
 
-        studentStats = new StudentStats(teacherDashboard, externalCourseExecution)
+        studentStats = new StudentStats(externalCourseExecution, teacherDashboard)
         studentStatsRepository.save(studentStats)
 
         questionStats = new QuestionStats(externalCourseExecution, teacherDashboard)

@@ -35,7 +35,7 @@ class NumStudentsTest extends SpockTest {
     def "Test student stats entity numStudents and testing set method for said attribute"() {
         given:
         def dashboard = new TeacherDashboard(courseExecution, teacher)
-        def studentStats = new StudentStats(dashboard, courseExecution)
+        def studentStats = new StudentStats(courseExecution, dashboard)
         def board1 = new StudentDashboard(courseExecution, student1)
         def board2 = new StudentDashboard(courseExecution, student2)
 

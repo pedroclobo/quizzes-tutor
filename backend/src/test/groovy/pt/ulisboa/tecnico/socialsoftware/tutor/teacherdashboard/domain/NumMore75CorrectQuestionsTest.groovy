@@ -32,7 +32,7 @@ class NumMore75CorrectQuestionsTest extends SpockTest {
         def courseExecution = new CourseExecution()
         def teacher = new Teacher()
         def teacherDashboard = new TeacherDashboard(courseExecution, teacher)
-        def studentStats = new StudentStats(teacherDashboard, courseExecution)
+        def studentStats = new StudentStats(courseExecution, teacherDashboard)
 
         when:
         courseExecution.addUser(student1)

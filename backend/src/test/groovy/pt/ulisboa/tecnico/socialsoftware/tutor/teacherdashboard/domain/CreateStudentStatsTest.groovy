@@ -31,7 +31,7 @@ class CreateStudentStatsTest extends SpockTest {
 
     def "create an empty studentStats"() {
         given: 
-        def studentStats = new StudentStats(teacherDashboard, externalCourseExecution)
+        def studentStats = new StudentStats(externalCourseExecution, teacherDashboard)
         studentStatsRepository.save(studentStats)
 
         expect:

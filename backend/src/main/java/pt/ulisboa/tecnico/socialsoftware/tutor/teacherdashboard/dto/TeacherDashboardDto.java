@@ -24,15 +24,15 @@ public class TeacherDashboardDto {
         this.id = teacherDashboard.getId();
         // For the number of students, we consider only active students
         this.numberOfStudents = teacherDashboard.getCourseExecution().getNumberOfActiveStudents();
-
+        // Number of Students from StudentStats
         this.numOfStudents = teacherDashboard.getStudentStats().stream()
         .map(StudentStats::getNumStudents)
         .collect(Collectors.toList());
-
+        // Number of students who got more than 75% of questions correct from StudentStats
         this.numMore75CorrectQuestions = teacherDashboard.getStudentStats().stream()
         .map(StudentStats::getNumMore75CorrectQuestions)
         .collect(Collectors.toList());
-
+        // Number of students who did at least 3 quizzes from StudentStats
         this.numAtLeast3Quizzes = teacherDashboard.getStudentStats().stream()
         .map(StudentStats::getNumAtLeast3Quizzes)
         .collect(Collectors.toList());

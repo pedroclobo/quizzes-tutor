@@ -33,7 +33,7 @@ class NumAtLeast3QuizzesTest extends SpockTest {
         given:
         def teacher = new Teacher()
         def teacherDashboard = new TeacherDashboard(courseExecution, teacher)
-        def studentStats = new StudentStats(teacherDashboard, courseExecution)
+        def studentStats = new StudentStats(courseExecution, teacherDashboard)
         studentStats.setTeacherDashboard(teacherDashboard)
         studentStats.setCourseExecution(courseExecution)
 
