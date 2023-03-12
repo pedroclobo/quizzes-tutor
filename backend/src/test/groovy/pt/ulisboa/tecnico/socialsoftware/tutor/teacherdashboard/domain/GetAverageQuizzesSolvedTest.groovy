@@ -45,16 +45,7 @@ class GetAverageQuizzesSolvedTest extends SpockTest {
 
     def "there are no students in the course execution"() {
         given: "a quiz"
-        def quizDto = new QuizDto()
-        quizDto.setKey(1)
-        quizDto.setTitle("Quiz 1")
-        quizDto.setScramble(true)
-        quizDto.setOneWay(true)
-        quizDto.setQrCodeOnly(true)
-        quizDto.setAvailableDate(STRING_DATE_TODAY)
-        quizDto.setConclusionDate(STRING_DATE_TOMORROW)
-        quizDto.setResultsDate(STRING_DATE_LATER)
-        def quiz = new Quiz(quizDto)
+        def quiz = createQuiz(1, QUIZ_1_NAME)
         quiz.setCourseExecution(externalCourseExecution)
         quizRepository.save(quiz)
 
@@ -68,29 +59,11 @@ class GetAverageQuizzesSolvedTest extends SpockTest {
 
     def "add quizzes answered by multiple students to a course execution"() {
         given: "two quizzes and two students"
-        def quizDto1 = new QuizDto()
-        quizDto1.setKey(1)
-        quizDto1.setTitle("Quiz 1")
-        quizDto1.setScramble(true)
-        quizDto1.setOneWay(true)
-        quizDto1.setQrCodeOnly(true)
-        quizDto1.setAvailableDate(STRING_DATE_TODAY)
-        quizDto1.setConclusionDate(STRING_DATE_TOMORROW)
-        quizDto1.setResultsDate(STRING_DATE_LATER)
-        def quiz1 = new Quiz(quizDto1)
+        def quiz1 = createQuiz(1, QUIZ_1_NAME)
         quiz1.setCourseExecution(externalCourseExecution)
         quizRepository.save(quiz1)
 
-        def quizDto2 = new QuizDto()
-        quizDto2.setKey(2)
-        quizDto2.setTitle("Quiz 2")
-        quizDto2.setScramble(true)
-        quizDto2.setOneWay(true)
-        quizDto2.setQrCodeOnly(true)
-        quizDto2.setAvailableDate(STRING_DATE_TODAY)
-        quizDto2.setConclusionDate(STRING_DATE_TOMORROW)
-        quizDto2.setResultsDate(STRING_DATE_LATER)
-        def quiz2 = new Quiz(quizDto1)
+        def quiz2 = createQuiz(2, QUIZ_2_NAME)
         quiz2.setCourseExecution(externalCourseExecution)
         quizRepository.save(quiz2)
 
@@ -115,29 +88,11 @@ class GetAverageQuizzesSolvedTest extends SpockTest {
 
     def "add quizzes answered by all students to a course execution"() {
         given: "two quizzes and two students"
-        def quizDto1 = new QuizDto()
-        quizDto1.setKey(1)
-        quizDto1.setTitle("Quiz 1")
-        quizDto1.setScramble(true)
-        quizDto1.setOneWay(true)
-        quizDto1.setQrCodeOnly(true)
-        quizDto1.setAvailableDate(STRING_DATE_TODAY)
-        quizDto1.setConclusionDate(STRING_DATE_TOMORROW)
-        quizDto1.setResultsDate(STRING_DATE_LATER)
-        def quiz1 = new Quiz(quizDto1)
+        def quiz1 = createQuiz(1, QUIZ_1_NAME)
         quiz1.setCourseExecution(externalCourseExecution)
         quizRepository.save(quiz1)
 
-        def quizDto2 = new QuizDto()
-        quizDto2.setKey(2)
-        quizDto2.setTitle("Quiz 2")
-        quizDto2.setScramble(true)
-        quizDto2.setOneWay(true)
-        quizDto2.setQrCodeOnly(true)
-        quizDto2.setAvailableDate(STRING_DATE_TODAY)
-        quizDto2.setConclusionDate(STRING_DATE_TOMORROW)
-        quizDto2.setResultsDate(STRING_DATE_LATER)
-        def quiz2 = new Quiz(quizDto1)
+        def quiz2 = createQuiz(2, QUIZ_2_NAME)
         quiz2.setCourseExecution(externalCourseExecution)
         quizRepository.save(quiz2)
 
@@ -163,29 +118,11 @@ class GetAverageQuizzesSolvedTest extends SpockTest {
 
     def "add quizzes to a course execution where not all students have answered a quiz"() {
         given: "two quizzes and two students"
-        def quizDto1 = new QuizDto()
-        quizDto1.setKey(1)
-        quizDto1.setTitle("Quiz 1")
-        quizDto1.setScramble(true)
-        quizDto1.setOneWay(true)
-        quizDto1.setQrCodeOnly(true)
-        quizDto1.setAvailableDate(STRING_DATE_TODAY)
-        quizDto1.setConclusionDate(STRING_DATE_TOMORROW)
-        quizDto1.setResultsDate(STRING_DATE_LATER)
-        def quiz1 = new Quiz(quizDto1)
+        def quiz1 = createQuiz(1, QUIZ_1_NAME)
         quiz1.setCourseExecution(externalCourseExecution)
         quizRepository.save(quiz1)
 
-        def quizDto2 = new QuizDto()
-        quizDto2.setKey(2)
-        quizDto2.setTitle("Quiz 2")
-        quizDto2.setScramble(true)
-        quizDto2.setOneWay(true)
-        quizDto2.setQrCodeOnly(true)
-        quizDto2.setAvailableDate(STRING_DATE_TODAY)
-        quizDto2.setConclusionDate(STRING_DATE_TOMORROW)
-        quizDto2.setResultsDate(STRING_DATE_LATER)
-        def quiz2 = new Quiz(quizDto2)
+        def quiz2 = createQuiz(2, QUIZ_2_NAME)
         quiz2.setCourseExecution(externalCourseExecution)
         quizRepository.save(quiz2)
 
@@ -209,16 +146,7 @@ class GetAverageQuizzesSolvedTest extends SpockTest {
 
     def "add quizzes to a course execution where a student has multiple answers to a quiz"() {
         given: "a quiz and two students"
-        def quizDto = new QuizDto()
-        quizDto.setKey(1)
-        quizDto.setTitle("Quiz 1")
-        quizDto.setScramble(true)
-        quizDto.setOneWay(true)
-        quizDto.setQrCodeOnly(true)
-        quizDto.setAvailableDate(STRING_DATE_TODAY)
-        quizDto.setConclusionDate(STRING_DATE_TOMORROW)
-        quizDto.setResultsDate(STRING_DATE_LATER)
-        def quiz = new Quiz(quizDto)
+        def quiz = createQuiz(1, QUIZ_1_NAME)
         quiz.setCourseExecution(externalCourseExecution)
         quizRepository.save(quiz)
 

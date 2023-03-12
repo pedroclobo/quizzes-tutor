@@ -43,19 +43,11 @@ class GetNumQuizzesTest extends SpockTest {
 
     def "add a quiz to a course execution"() {
         given: "a quiz"
-        def quizDto = new QuizDto()
-        quizDto.setKey(1)
-        quizDto.setTitle("Quiz 1")
-        quizDto.setScramble(true)
-        quizDto.setOneWay(true)
-        quizDto.setQrCodeOnly(true)
-        quizDto.setAvailableDate(STRING_DATE_TODAY)
-        quizDto.setConclusionDate(STRING_DATE_TOMORROW)
-        quizDto.setResultsDate(STRING_DATE_LATER)
-        def quiz = new Quiz(quizDto)
+        def quiz = createQuiz(1, QUIZ_1_NAME)
+        quiz.setCourseExecution(externalCourseExecution)
+        quizRepository.save(quiz)
 
         when: "the quiz is added to the course execution"
-        externalCourseExecution.addQuiz(quiz)
         quizStats.update()
 
         then: "the number of quizzes is 1"
@@ -64,33 +56,15 @@ class GetNumQuizzesTest extends SpockTest {
 
     def "add two quizzes to a course execution and remove them"() {
         given: "two quizzes"
-        def quizDto1 = new QuizDto()
-        quizDto1.setKey(1)
-        quizDto1.setTitle("Quiz 1")
-        quizDto1.setScramble(true)
-        quizDto1.setOneWay(true)
-        quizDto1.setQrCodeOnly(true)
-        quizDto1.setAvailableDate(STRING_DATE_TODAY)
-        quizDto1.setConclusionDate(STRING_DATE_TOMORROW)
-        quizDto1.setResultsDate(STRING_DATE_LATER)
-        def quiz1 = new Quiz(quizDto1)
+        def quiz1 = createQuiz(1, QUIZ_1_NAME)
+        quiz1.setCourseExecution(externalCourseExecution)
+        quizRepository.save(quiz1)
 
-        def quizDto2 = new QuizDto()
-        quizDto2.setKey(1)
-        quizDto2.setTitle("Quiz 1")
-        quizDto2.setScramble(true)
-        quizDto2.setOneWay(true)
-        quizDto2.setQrCodeOnly(true)
-        quizDto2.setAvailableDate(STRING_DATE_TODAY)
-        quizDto2.setConclusionDate(STRING_DATE_TOMORROW)
-        quizDto2.setResultsDate(STRING_DATE_LATER)
-        def quiz2 = new Quiz(quizDto2)
+        def quiz2 = createQuiz(2, QUIZ_2_NAME)
+        quiz2.setCourseExecution(externalCourseExecution)
+        quizRepository.save(quiz2)
 
         when: "the two quizzes are added to the course execution"
-        quiz1.setCourseExecution(externalCourseExecution)
-        quiz2.setCourseExecution(externalCourseExecution)
-        externalCourseExecution.addQuiz(quiz1)
-        externalCourseExecution.addQuiz(quiz2)
         quizStats.update()
 
         then: "the number of quizzes is 2"
@@ -113,19 +87,11 @@ class GetNumQuizzesTest extends SpockTest {
 
     def "add the same quiz twice to a course execution"() {
         given: "a quiz"
-        def quizDto = new QuizDto()
-        quizDto.setKey(1)
-        quizDto.setTitle("Quiz 1")
-        quizDto.setScramble(true)
-        quizDto.setOneWay(true)
-        quizDto.setQrCodeOnly(true)
-        quizDto.setAvailableDate(STRING_DATE_TODAY)
-        quizDto.setConclusionDate(STRING_DATE_TOMORROW)
-        quizDto.setResultsDate(STRING_DATE_LATER)
-        def quiz = new Quiz(quizDto)
+        def quiz = createQuiz(1, QUIZ_1_NAME)
+        quiz.setCourseExecution(externalCourseExecution)
+        quizRepository.save(quiz)
 
         when: "the quiz is added to the course execution"
-        externalCourseExecution.addQuiz(quiz)
         quizStats.update()
 
         then: "the number of quizzes is 1"
