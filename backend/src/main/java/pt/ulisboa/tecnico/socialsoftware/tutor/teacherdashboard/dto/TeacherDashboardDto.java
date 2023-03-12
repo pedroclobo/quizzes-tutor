@@ -13,6 +13,9 @@ public class TeacherDashboardDto {
     private List<Integer> numOfStudents;
     private List<Integer> numMore75CorrectQuestions;
     private List<Integer> numAtLeast3Quizzes;
+    private List<Integer> numQuestionsAvailable;
+    private List<Integer> uniqueQuestionsAnswered;
+    private List<Float> averageQuestionsAnswered;
     
     public TeacherDashboardDto() {
     }
@@ -32,6 +35,18 @@ public class TeacherDashboardDto {
 
         this.numAtLeast3Quizzes = teacherDashboard.getStudentStats().stream()
         .map(StudentStats::getNumAtLeast3Quizzes)
+        .collect(Collectors.toList());
+
+        this.numQuestionsAvailable = teacherDashboard.getQuestionStats().stream()
+        .map(QuestionStats::getNumAvailable)
+        .collect(Collectors.toList());
+
+        this.uniqueQuestionsAnswered = teacherDashboard.getQuestionStats().stream()
+        .map(QuestionStats::getUniqueQuestionsAnswered)
+        .collect(Collectors.toList());
+
+        this.averageQuestionsAnswered = teacherDashboard.getQuestionStats().stream()
+        .map(QuestionStats::getAverageQuestionsAnswered)
         .collect(Collectors.toList());
     }
 
@@ -75,6 +90,30 @@ public class TeacherDashboardDto {
         return numAtLeast3Quizzes;
     }
 
+    public List<Integer> getNumAQuestionsAvailable() {
+        return numQuestionsAvailable;
+    }
+
+    public void setNumAvailableQuestions(List<Integer> numQuestionsAvailable) {
+        this.numQuestionsAvailable = numQuestionsAvailable;
+    }
+
+    public List<Integer> getUniqueQuestionsAnswered() {
+        return uniqueQuestionsAnswered;
+    }
+
+    public void setUniqueQuestionsAnswered(List<Integer> uniqueQuestionsAnswered) {
+        this.uniqueQuestionsAnswered = uniqueQuestionsAnswered;
+    }
+
+    public List<Float> getAverageQuestionsAnswered() {
+        return averageQuestionsAnswered;
+    }
+
+    public void setAverageQuestionsAnswered(List<Float> averageQuestionsAnswered) {
+        this.averageQuestionsAnswered = averageQuestionsAnswered;
+    }
+
     @Override
     public String toString() {
         return "TeacherDashboardDto{" +
@@ -83,6 +122,9 @@ public class TeacherDashboardDto {
                 ", numOfStudents=" + this.getNumOfStudents() +
                 ", numMore75CorrectQuestions=" + this.getNumMore75CorrectQuestions() +
                 ", numAtLeast3Quizzes=" + this.getNumAtLeast3Quizzes() +
+                ", numQuestionsAvailable=" + this.getNumAQuestionsAvailable() +
+                ", uniqueQuestionsAnswered=" + this.getUniqueQuestionsAnswered() +
+                ", averageQuestionsAnswered=" + this.getAverageQuestionsAnswered() +
                 "}";
     }
 }
