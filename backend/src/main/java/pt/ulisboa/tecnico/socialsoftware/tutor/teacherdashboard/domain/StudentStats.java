@@ -35,6 +35,11 @@ public class StudentStats implements DomainEntity{
         this.numStudents = 0;
     }
 
+    public void remove() {
+        teacherDashboard.getStudentStats().remove(this);
+        teacherDashboard = null;
+    }
+
     public Integer getId() {
         return id;
     }
