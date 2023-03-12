@@ -15,6 +15,13 @@ import spock.lang.Unroll
     class CreateTeacherDashboardTest extends SpockTest {
     def teacher
 
+    def createCourseExecution(Course course, String academicTerm) {
+        def courseExecution = new CourseExecution(course, COURSE_1_ACRONYM, academicTerm, Course.Type.TECNICO, LOCAL_DATE_TODAY)
+        courseExecutionRepository.save(courseExecution)
+
+        return courseExecution
+    }
+
     def setup() {
         createExternalCourseAndExecution()
 
@@ -96,10 +103,11 @@ import spock.lang.Unroll
 
     def "create a dashboard with the teacher associated to one course execution"() {
         given: "a teacher in a course execution"
-        teacher.addCourse(externalCourseExecution)
+        def courseExecution = createCourseExecution(externalCourse, "1º Semestre 2020/2021")
+        teacher.addCourse(courseExecution)
 
         when: "a dashboard is created"
-        teacherDashboardService.createTeacherDashboard(externalCourseExecution.getId(), teacher.getId())
+        teacherDashboardService.createTeacherDashboard(courseExecution.getId(), teacher.getId())
 
         then: "the associated statistics have been created"
         def result = teacherDashboardRepository.findAll().get(0)
@@ -108,21 +116,21 @@ import spock.lang.Unroll
         result.getStudentStats().size() == 1
         result.getQuestionStats().size() == 1
 
-        result.getQuizStats().get(0).getCourseExecution().getId() == externalCourseExecution.getId()
-        result.getStudentStats().get(0).getCourseExecution().getId() == externalCourseExecution.getId()
-        result.getQuestionStats().get(0).getCourseExecution().getId() == externalCourseExecution.getId()
+        result.getQuizStats().get(0).getCourseExecution().getId() == courseExecution.getId()
+        result.getStudentStats().get(0).getCourseExecution().getId() == courseExecution.getId()
+        result.getQuestionStats().get(0).getCourseExecution().getId() == courseExecution.getId()
     }
 
     def "create a dashboard with the teacher associated to two course executions"() {
         given: "a teacher in two course executions"
-        def courseExecution2 = new CourseExecution(externalCourse, COURSE_2_ACRONYM, COURSE_2_ACADEMIC_TERM, Course.Type.TECNICO, LOCAL_DATE_TODAY)
-        courseExecutionRepository.save(courseExecution2)
+        def courseExecution1 = createCourseExecution(externalCourse, "1º Semestre 2021/2022")
+        def courseExecution2 = createCourseExecution(externalCourse, "1º Semestre 2020/2021")
 
-        teacher.addCourse(externalCourseExecution)
+        teacher.addCourse(courseExecution1)
         teacher.addCourse(courseExecution2)
 
         when: "a dashboard is created"
-        teacherDashboardService.createTeacherDashboard(externalCourseExecution.getId(), teacher.getId())
+        teacherDashboardService.createTeacherDashboard(courseExecution1.getId(), teacher.getId())
 
         then: "the associated statistics have been created"
         def result = teacherDashboardRepository.findAll().get(0)
@@ -131,9 +139,9 @@ import spock.lang.Unroll
         result.getStudentStats().size() == 2
         result.getQuestionStats().size() == 2
 
-        result.getQuizStats().get(0).getCourseExecution().getId() == externalCourseExecution.getId()
-        result.getStudentStats().get(0).getCourseExecution().getId() == externalCourseExecution.getId()
-        result.getQuestionStats().get(0).getCourseExecution().getId() == externalCourseExecution.getId()
+        result.getQuizStats().get(0).getCourseExecution().getId() == courseExecution1.getId()
+        result.getStudentStats().get(0).getCourseExecution().getId() == courseExecution1.getId()
+        result.getQuestionStats().get(0).getCourseExecution().getId() == courseExecution1.getId()
 
         result.getQuizStats().get(1).getCourseExecution().getId() == courseExecution2.getId()
         result.getStudentStats().get(1).getCourseExecution().getId() == courseExecution2.getId()
@@ -142,76 +150,68 @@ import spock.lang.Unroll
 
     def "create a dashboard with the teacher associated with three course executions"() {
         given: "a teacher in three course executions"
-        def courseExecution2 = new CourseExecution(externalCourse, COURSE_2_ACRONYM, COURSE_2_ACADEMIC_TERM, Course.Type.TECNICO, LOCAL_DATE_TODAY)
-        courseExecutionRepository.save(courseExecution2)
+        def courseExecution1 = createCourseExecution(externalCourse, "1º Semestre 2021/2022")
+        def courseExecution2 = createCourseExecution(externalCourse, "1º Semestre 2020/2021")
+        def courseExecution3 = createCourseExecution(externalCourse, "1º Semestre 2019/2020")
 
-        def courseExecution3 = new CourseExecution(externalCourse, COURSE_3_ACRONYM, COURSE_3_ACADEMIC_TERM, Course.Type.TECNICO, LOCAL_DATE_TODAY)
-        courseExecutionRepository.save(courseExecution3)
-
-        teacher.addCourse(externalCourseExecution)
+        teacher.addCourse(courseExecution1)
         teacher.addCourse(courseExecution2)
         teacher.addCourse(courseExecution3)
 
         when: "a dashboard is created"
-        teacherDashboardService.createTeacherDashboard(externalCourseExecution.getId(), teacher.getId())
+        teacherDashboardService.createTeacherDashboard(courseExecution1.getId(), teacher.getId())
 
         then: "the associated statistics have been created"
         def result = teacherDashboardRepository.findAll().get(0)
 
         result.getQuizStats().size() == 3
-        result.getQuizStats().get(0).getCourseExecution().getId() == externalCourseExecution.getId()
+        result.getQuizStats().get(0).getCourseExecution().getId() == courseExecution1.getId()
         result.getQuizStats().get(1).getCourseExecution().getId() == courseExecution2.getId()
         result.getQuizStats().get(2).getCourseExecution().getId() == courseExecution3.getId()
 
         result.getStudentStats().size() == 3
-        result.getStudentStats().get(0).getCourseExecution().getId() == externalCourseExecution.getId()
+        result.getStudentStats().get(0).getCourseExecution().getId() == courseExecution1.getId()
         result.getStudentStats().get(1).getCourseExecution().getId() == courseExecution2.getId()
         result.getStudentStats().get(2).getCourseExecution().getId() == courseExecution3.getId()
 
         result.getQuestionStats().size() == 3
-        result.getQuestionStats().get(0).getCourseExecution().getId() == externalCourseExecution.getId()
+        result.getQuestionStats().get(0).getCourseExecution().getId() == courseExecution1.getId()
         result.getQuestionStats().get(1).getCourseExecution().getId() == courseExecution2.getId()
         result.getQuestionStats().get(2).getCourseExecution().getId() == courseExecution3.getId()
     }
 
     def "create a dashboard with the teacher associated with five course executions"() {
         given: "a teacher in five course executions"
-        def courseExecution2 = new CourseExecution(externalCourse, COURSE_2_ACRONYM, COURSE_2_ACADEMIC_TERM, Course.Type.TECNICO, LOCAL_DATE_TODAY)
-        courseExecutionRepository.save(courseExecution2)
+        def courseExecution1 = createCourseExecution(externalCourse, "1º Semestre 2021/2022")
+        def courseExecution2 = createCourseExecution(externalCourse, "1º Semestre 2020/2021")
+        def courseExecution3 = createCourseExecution(externalCourse, "1º Semestre 2019/2020")
+        def courseExecution4 = createCourseExecution(externalCourse, "1º Semestre 2018/2019")
+        def courseExecution5 = createCourseExecution(externalCourse, "1º Semestre 2017/2018")
 
-        def courseExecution3 = new CourseExecution(externalCourse, COURSE_3_ACRONYM, COURSE_3_ACADEMIC_TERM, Course.Type.TECNICO, LOCAL_DATE_TODAY)
-        courseExecutionRepository.save(courseExecution3)
-
-        def courseExecution4 = new CourseExecution(externalCourse, COURSE_4_ACRONYM, COURSE_4_ACADEMIC_TERM, Course.Type.TECNICO, LOCAL_DATE_TODAY)
-        courseExecutionRepository.save(courseExecution4)
-
-        def courseExecution5 = new CourseExecution(externalCourse, COURSE_5_ACRONYM, COURSE_5_ACADEMIC_TERM, Course.Type.TECNICO, LOCAL_DATE_TODAY)
-        courseExecutionRepository.save(courseExecution5)
-
-        teacher.addCourse(externalCourseExecution)
+        teacher.addCourse(courseExecution1)
         teacher.addCourse(courseExecution2)
         teacher.addCourse(courseExecution3)
         teacher.addCourse(courseExecution4)
         teacher.addCourse(courseExecution5)
 
         when: "a dashboard is created"
-        teacherDashboardService.createTeacherDashboard(externalCourseExecution.getId(), teacher.getId())
+        teacherDashboardService.createTeacherDashboard(courseExecution1.getId(), teacher.getId())
 
         then: "the associated statistics have been created"
         def result = teacherDashboardRepository.findAll().get(0)
 
         result.getQuizStats().size() == 3
-        result.getQuizStats().get(0).getCourseExecution().getId() == externalCourseExecution.getId()
+        result.getQuizStats().get(0).getCourseExecution().getId() == courseExecution1.getId()
         result.getQuizStats().get(1).getCourseExecution().getId() == courseExecution2.getId()
         result.getQuizStats().get(2).getCourseExecution().getId() == courseExecution3.getId()
 
         result.getStudentStats().size() == 3
-        result.getStudentStats().get(0).getCourseExecution().getId() == externalCourseExecution.getId()
+        result.getStudentStats().get(0).getCourseExecution().getId() == courseExecution1.getId()
         result.getStudentStats().get(1).getCourseExecution().getId() == courseExecution2.getId()
         result.getStudentStats().get(2).getCourseExecution().getId() == courseExecution3.getId()
 
         result.getQuestionStats().size() == 3
-        result.getQuestionStats().get(0).getCourseExecution().getId() == externalCourseExecution.getId()
+        result.getQuestionStats().get(0).getCourseExecution().getId() == courseExecution1.getId()
         result.getQuestionStats().get(1).getCourseExecution().getId() == courseExecution2.getId()
         result.getQuestionStats().get(2).getCourseExecution().getId() == courseExecution3.getId()
     }
