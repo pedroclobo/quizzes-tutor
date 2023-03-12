@@ -139,7 +139,9 @@ public class TeacherDashboardService {
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public void updateAllTeacherDashboards() {
         List<TeacherDashboard> dashboards = teacherDashboardRepository.findAll();
-        
+        if(dashboards.size() == 0) {
+            throw new TutorException(NO_TEACHER_DASHBOARDS);
+        }
         for(TeacherDashboard dashboard : dashboards) {
             updateTeacherDashboard(dashboard.getId());
         }
