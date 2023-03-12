@@ -7,14 +7,21 @@ import org.springframework.transaction.annotation.Transactional;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.execution.domain.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.execution.repository.CourseExecutionRepository;
+import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain.QuestionStats;
+import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain.QuizStats;
+import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain.StudentStats;
 import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain.TeacherDashboard;
 import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.dto.TeacherDashboardDto;
+import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.repository.QuestionStatsRepository;
+import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.repository.QuizStatsRepository;
+import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.repository.StudentStatsRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.repository.TeacherDashboardRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.Teacher;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.repository.TeacherRepository;
 
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
@@ -29,6 +36,15 @@ public class TeacherDashboardService {
 
     @Autowired
     private TeacherDashboardRepository teacherDashboardRepository;
+
+    @Autowired
+    private StudentStatsRepository studentStatsRepository;
+
+    @Autowired
+    private QuizStatsRepository quizStatsRepository;
+
+    @Autowired
+    private QuestionStatsRepository questionStatsRepository;
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public TeacherDashboardDto getTeacherDashboard(int courseExecutionId, int teacherId) {
@@ -67,6 +83,38 @@ public class TeacherDashboardService {
 
     private TeacherDashboardDto createAndReturnTeacherDashboardDto(CourseExecution courseExecution, Teacher teacher) {
         TeacherDashboard teacherDashboard = new TeacherDashboard(courseExecution, teacher);
+
+        // Get course execution ids from the current course
+        // and sort them by year
+        Integer courseId = courseExecution.getCourse().getId();
+        List<Integer> courseExecutionIds = new ArrayList<>(courseExecutionRepository.getCourseExecutionsIdByCourseId(courseId).stream().filter(id -> {
+            CourseExecution execution = courseExecutionRepository.findById(id).orElse(null);
+            return execution.getTeachers().stream().anyMatch(t -> t.getId() == teacher.getId());
+        }).collect(Collectors.toList()));
+
+        courseExecutionIds.sort((id1, id2) -> {
+            CourseExecution ce1 = courseExecutionRepository.findById(id1).orElse(null);
+            CourseExecution ce2 = courseExecutionRepository.findById(id2).orElse(null);
+            if (ce1 == null || ce2 == null) {
+                return 0;
+            }
+            return Integer.compare(ce2.getYear(), ce1.getYear());
+        });
+
+        // Create the stats for the latest 3 course executions
+        for (int i = 0; i < Math.min(courseExecutionIds.size(), 3); i++) {
+            CourseExecution latestCourseExecution = courseExecutionRepository.findById(courseExecutionIds.get(i)).orElse(null);
+            if (courseExecution != null) {
+                QuizStats quizStats = new QuizStats(latestCourseExecution, teacherDashboard);
+                StudentStats studentStats = new StudentStats(teacherDashboard, latestCourseExecution);
+                QuestionStats questionStats = new QuestionStats(latestCourseExecution, teacherDashboard);
+
+                quizStatsRepository.save(quizStats);
+                studentStatsRepository.save(studentStats);
+                questionStatsRepository.save(questionStats);
+            }
+        }
+
         teacherDashboardRepository.save(teacherDashboard);
 
         return new TeacherDashboardDto(teacherDashboard);
