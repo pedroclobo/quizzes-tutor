@@ -42,12 +42,12 @@ class GetNumQuizzesTest extends SpockTest {
     }
 
     def "add a quiz to a course execution"() {
-        given: "a quiz"
+        given: "a quiz in a course execution"
         def quiz = createQuiz(1, QUIZ_1_NAME)
         quiz.setCourseExecution(externalCourseExecution)
         quizRepository.save(quiz)
 
-        when: "the quiz is added to the course execution"
+        when: "the quiz stats are updated"
         quizStats.update()
 
         then: "the number of quizzes is 1"
@@ -55,7 +55,7 @@ class GetNumQuizzesTest extends SpockTest {
     }
 
     def "add two quizzes to a course execution and remove them"() {
-        given: "two quizzes"
+        given: "two quizzes in a course execution"
         def quiz1 = createQuiz(1, QUIZ_1_NAME)
         quiz1.setCourseExecution(externalCourseExecution)
         quizRepository.save(quiz1)
@@ -64,7 +64,7 @@ class GetNumQuizzesTest extends SpockTest {
         quiz2.setCourseExecution(externalCourseExecution)
         quizRepository.save(quiz2)
 
-        when: "the two quizzes are added to the course execution"
+        when: "the quiz stats are updated"
         quizStats.update()
 
         then: "the number of quizzes is 2"
@@ -86,7 +86,7 @@ class GetNumQuizzesTest extends SpockTest {
     }
 
     def "add the same quiz twice to a course execution"() {
-        given: "a quiz"
+        given: "a quiz in a course execution"
         def quiz = createQuiz(1, QUIZ_1_NAME)
         quiz.setCourseExecution(externalCourseExecution)
         quizRepository.save(quiz)
@@ -97,7 +97,7 @@ class GetNumQuizzesTest extends SpockTest {
         then: "the number of quizzes is 1"
         quizStats.numQuizzes == 1
 
-        when: "the same quiz is added to the course execution"
+        when: "the quiz stats are updated"
         externalCourseExecution.addQuiz(quiz)
         quizStats.update()
 

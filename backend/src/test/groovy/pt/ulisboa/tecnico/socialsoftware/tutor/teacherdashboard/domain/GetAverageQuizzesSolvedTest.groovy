@@ -44,7 +44,7 @@ class GetAverageQuizzesSolvedTest extends SpockTest {
     }
 
     def "there are no students in the course execution"() {
-        given: "a quiz"
+        given: "a quiz in a course execution"
         def quiz = createQuiz(1, QUIZ_1_NAME)
         quiz.setCourseExecution(externalCourseExecution)
         quizRepository.save(quiz)
@@ -87,7 +87,7 @@ class GetAverageQuizzesSolvedTest extends SpockTest {
     }
 
     def "add quizzes answered by all students to a course execution"() {
-        given: "two quizzes and two students"
+        given: "two quizzes and two students in a course execution"
         def quiz1 = createQuiz(1, QUIZ_1_NAME)
         quiz1.setCourseExecution(externalCourseExecution)
         quizRepository.save(quiz1)
@@ -117,7 +117,7 @@ class GetAverageQuizzesSolvedTest extends SpockTest {
     }
 
     def "add quizzes to a course execution where not all students have answered a quiz"() {
-        given: "two quizzes and two students"
+        given: "two quizzes and two students in a course execution"
         def quiz1 = createQuiz(1, QUIZ_1_NAME)
         quiz1.setCourseExecution(externalCourseExecution)
         quizRepository.save(quiz1)
@@ -145,7 +145,7 @@ class GetAverageQuizzesSolvedTest extends SpockTest {
     }
 
     def "add quizzes to a course execution where a student has multiple answers to a quiz"() {
-        given: "a quiz and two students"
+        given: "a quiz and two students in a course execution"
         def quiz = createQuiz(1, QUIZ_1_NAME)
         quiz.setCourseExecution(externalCourseExecution)
         quizRepository.save(quiz)

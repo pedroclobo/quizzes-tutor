@@ -44,7 +44,7 @@ class GetUniqueQuizzesSolvedTest extends SpockTest {
     }
 
     def "add an answer to a quiz"() {
-        given: "a quiz and a student"
+        given: "a quiz and a student in a course execution"
         def quiz = createQuiz(1, QUIZ_1_NAME)
         quiz.setCourseExecution(externalCourseExecution)
         quizRepository.save(quiz)
@@ -62,7 +62,7 @@ class GetUniqueQuizzesSolvedTest extends SpockTest {
     }
 
     def "add two quizzes with answers to a course execution and remove the answers"() {
-        given: "two quizzes and a student"
+        given: "two quizzes and a student in a course execution"
         def quiz1 = createQuiz(1, QUIZ_1_NAME)
         quiz1.setCourseExecution(externalCourseExecution)
         quizRepository.save(quiz1)
@@ -100,7 +100,7 @@ class GetUniqueQuizzesSolvedTest extends SpockTest {
     }
 
     def "add a quiz with two answers from the same student to the course execution"() {
-        given: "a quiz and a student"
+        given: "a quiz and a student in a course execution"
         def quiz = createQuiz(1, QUIZ_1_NAME)
         quiz.setCourseExecution(externalCourseExecution)
         quizRepository.save(quiz)
