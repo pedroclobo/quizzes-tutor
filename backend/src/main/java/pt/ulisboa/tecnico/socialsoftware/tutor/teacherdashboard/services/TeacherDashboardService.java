@@ -106,7 +106,7 @@ public class TeacherDashboardService {
             CourseExecution latestCourseExecution = courseExecutionRepository.findById(courseExecutionIds.get(i)).orElse(null);
             if (courseExecution != null) {
                 QuizStats quizStats = new QuizStats(latestCourseExecution, teacherDashboard);
-                StudentStats studentStats = new StudentStats(teacherDashboard, latestCourseExecution);
+                StudentStats studentStats = new StudentStats(latestCourseExecution, teacherDashboard);
                 QuestionStats questionStats = new QuestionStats(latestCourseExecution, teacherDashboard);
 
                 quizStatsRepository.save(quizStats);
