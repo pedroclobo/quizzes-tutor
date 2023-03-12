@@ -6,6 +6,10 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.questionsubmission.domain.QuestionSubmission;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.Student;
+import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
+import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question.Status;
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -36,6 +40,9 @@ public class QuestionStats implements DomainEntity {
     public QuestionStats(CourseExecution courseExecution, TeacherDashboard teacherDashboard) {
         setCourseExecution(courseExecution);
         setTeacherDashboard(teacherDashboard);
+        numAvailable = 0;
+        uniqueQuestionsAnswered = 0;
+        averageQuestionsAnswered = 0.0f;
     }
 
     public void remove() {
@@ -89,54 +96,32 @@ public class QuestionStats implements DomainEntity {
     }
 
     public void updateNumAvailable() {
-        Set<Question> questions = courseExecution.getCourse().getQuestions();
-        int numAvailable = 0;
-        
-        for (Question question : questions) {
-            if (question.getStatus() == Question.Status.AVAILABLE) {
-                numAvailable++;
-            }
-        }
-
-        setNumAvailable(numAvailable);
+        this.numAvailable = (int) courseExecution.getQuizzes().stream()
+            .flatMap(q -> q.getQuizQuestions().stream())
+            .map(QuizQuestion::getQuestion)
+            .filter(q -> q.getStatus() == Status.AVAILABLE)
+            .distinct()
+            .count();
     }
 
     public void updateUniqueQuestionsAnswered() {
-        int numQuestions = (int) courseExecution.getQuestionSubmissions()
-                                    .stream()
-                                    .map(qSubm -> Arrays.asList(qSubm.getQuestion(), qSubm.getSubmitter()))
-                                    .distinct()
-                                    .map(question -> question.get(0))
-                                    .distinct()
-                                    .count();
-        
-        setUniqueQuestionsAnswered(numQuestions);
+        this.uniqueQuestionsAnswered = (int) courseExecution.getQuizzes().stream()
+                .flatMap(q -> q.getQuizAnswers() .stream()
+                    .flatMap(qa -> qa.getQuestionAnswers().stream()
+                        .map(QuestionAnswer::getQuestion)))
+            .distinct()
+            .count();
     }
 
     public void updateAverageQuestionsAnswered() {
-        int numAnswers = 0;
-        Set<Student> students = courseExecution.getStudents();
-        Set<Question> uniqueQuestions = new HashSet<>();
+        int students = courseExecution.getStudents().size();
 
-        for (Student student : students) {
-            Set<QuestionSubmission> questionSubmissions = student.getQuestionSubmissions();
-            for (QuestionSubmission questionSubmission : questionSubmissions) {
-                Question question = questionSubmission.getQuestion();
-                if (!uniqueQuestions.contains(question)) {
-                    uniqueQuestions.add(question);
-                }
-            }
-            numAnswers += uniqueQuestions.size();
-            uniqueQuestions.clear();
-        }
+        long uniqueAllStudents = courseExecution.getStudents().stream().mapToLong(student -> 
+            student.getQuizAnswers().stream().flatMap(
+                qa -> qa.getQuestionAnswers().stream().map(QuestionAnswer::getQuestion)
+            ).distinct().count()).sum();
 
-        int numStudents = students.size();
-
-        if (numStudents == 0) {
-            setAverageQuestionsAnswered(0);
-        } else {
-            setAverageQuestionsAnswered((float) numAnswers / numStudents);
-        }
+        this.averageQuestionsAnswered = students > 0 ? (float) uniqueAllStudents / students : 0.0f;
     }
 
 
@@ -150,16 +135,17 @@ public class QuestionStats implements DomainEntity {
         updateAverageQuestionsAnswered();
     }
 
+
     @Override
     public String toString() {
         return "QuestionStats{" +
-                "id=" + id +
-                ", courseExecution=" + courseExecution +
-                ", teacherDashboard=" + teacherDashboard +
-                ", numAvailable=" + numAvailable +
-                ", uniqueQuestionsAnswered=" + uniqueQuestionsAnswered +
-                ", averageQuestionsAnswered=" + averageQuestionsAnswered +
-                '}';
-    }
+            "id=" + id +
+            ", courseExecution=" + courseExecution +
+            ", teacherDashboard=" + teacherDashboard +
+            ", numAvailable=" + numAvailable +
+            ", uniqueQuestionsAnswered=" + uniqueQuestionsAnswered +
+            ", averageQuestionsAnswered=" + averageQuestionsAnswered +
+            '}';
+      }
 
 }
