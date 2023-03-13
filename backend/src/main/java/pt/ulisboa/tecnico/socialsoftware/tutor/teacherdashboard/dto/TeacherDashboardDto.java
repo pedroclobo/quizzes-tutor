@@ -167,7 +167,7 @@ public class TeacherDashboardDto {
                 ", averageQuestionsAnswered=" + this.getAverageQuestionsAnswered() +
                 ", numQuizzes=" + this.getNumQuizzes() +
                 ", uniqueQuizzesSolved=" + this.getUniqueQuizzesSolved() +
-                ", avetageQuizzesSolved=" + this.getAverageQuizzesSolved() +
+                ", averageQuizzesSolved=" + this.getAverageQuizzesSolved() +
                 "}";
     }
 }
