@@ -54,15 +54,6 @@ public class CourseExecution implements DomainEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "courseExecution", orphanRemoval = true)
     private final Set<DifficultQuestion> difficultQuestions = new HashSet<>();
 
-    @OneToOne(cascade = CascadeType.REMOVE)
-    private QuestionStats questionStats;
-
-    @OneToOne(cascade = CascadeType.REMOVE)
-    private StudentStats studentStats;
-
-    @OneToOne(cascade = CascadeType.REMOVE)
-    private QuizStats quizStats;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -130,15 +121,6 @@ public class CourseExecution implements DomainEntity {
             throw new TutorException(INVALID_ACRONYM_FOR_COURSE_EXECUTION);
         }
         this.acronym = acronym;
-    }
-
-    public StudentStats getStudentStats() {
-        return studentStats;
-    }
-
-    public void setStudentStats(StudentStats studentStats) {
-        this.studentStats = studentStats;
-        studentStats.setCourseExecution(this);
     }
 
     public String getAcademicTerm() {
@@ -233,24 +215,6 @@ public class CourseExecution implements DomainEntity {
             throw new TutorException(ErrorMessage.DIFFICULT_QUESTION_ALREADY_CREATED);
         }
         difficultQuestions.add(difficultQuestion);
-    }
-
-    public QuestionStats getQuestionStats() {
-        return questionStats;
-    }
-
-    public void setQuestionStats(QuestionStats questionStats) {
-        this.questionStats = questionStats;
-        questionStats.setCourseExecution(this);
-    }
-
-    public QuizStats getQuizStats() {
-        return quizStats;
-    }
-
-    public void setQuizStats(QuizStats quizStats) {
-        this.quizStats = quizStats;
-        quizStats.setCourseExecution(this);
     }
 
     @Override

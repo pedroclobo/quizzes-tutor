@@ -32,7 +32,6 @@ class RemoveQuestionStatsTest extends SpockTest {
 
         then: "the teacher dashboard and the course execution don't have any QuestionStats"
         teacherDashboard.getQuestionStats().isEmpty()
-        externalCourseExecution.getQuestionStats() == null
     }
 
     @TestConfiguration
