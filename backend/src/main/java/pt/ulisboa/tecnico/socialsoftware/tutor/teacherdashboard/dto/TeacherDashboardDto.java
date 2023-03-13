@@ -16,6 +16,9 @@ public class TeacherDashboardDto {
     private List<Integer> numQuestionsAvailable;
     private List<Integer> uniqueQuestionsAnswered;
     private List<Float> averageQuestionsAnswered;
+    private List<Integer> numQuizzes;
+    private List<Integer> uniqueQuizzesSolved;
+    private List<Float> averageQuizzesSolved;
     
     public TeacherDashboardDto() {
     }
@@ -48,6 +51,19 @@ public class TeacherDashboardDto {
         this.averageQuestionsAnswered = teacherDashboard.getQuestionStats().stream()
         .map(QuestionStats::getAverageQuestionsAnswered)
         .collect(Collectors.toList());
+
+        this.numQuizzes = teacherDashboard.getQuizStats().stream()
+        .map(QuizStats::getNumQuizzes)
+        .collect(Collectors.toList());
+
+        this.uniqueQuizzesSolved = teacherDashboard.getQuizStats().stream()
+        .map(QuizStats::getUniqueQuizzesSolved)
+        .collect(Collectors.toList());
+
+        this.averageQuizzesSolved = teacherDashboard.getQuizStats().stream()
+        .map(QuizStats::getAverageQuizzesSolved)
+        .collect(Collectors.toList());
+
     }
 
     public Integer getId() {
@@ -114,6 +130,30 @@ public class TeacherDashboardDto {
         this.averageQuestionsAnswered = averageQuestionsAnswered;
     }
 
+    public List<Integer> getNumQuizzes() {
+        return numQuizzes;
+    }
+
+    public List<Integer> getUniqueQuizzesSolved() {
+        return uniqueQuizzesSolved;
+    }
+
+    public List<Float> getAverageQuizzesSolved() {
+        return averageQuizzesSolved;
+    }
+
+    public void setNumQuizzes(List<Integer> numQuizzes) {
+        this.numQuizzes = numQuizzes;
+    }
+
+    public void setUniqueQuizzesSolved(List<Integer> uniqueQuizzesSolved) {
+        this.uniqueQuizzesSolved = uniqueQuizzesSolved;
+    }
+
+    public void setAverageQuizzesSolved(List<Float> averageQuizzesSolved) {
+        this.averageQuizzesSolved = averageQuizzesSolved;
+    }
+
     @Override
     public String toString() {
         return "TeacherDashboardDto{" +
@@ -125,6 +165,9 @@ public class TeacherDashboardDto {
                 ", numQuestionsAvailable=" + this.getNumAQuestionsAvailable() +
                 ", uniqueQuestionsAnswered=" + this.getUniqueQuestionsAnswered() +
                 ", averageQuestionsAnswered=" + this.getAverageQuestionsAnswered() +
+                ", numQuizzes=" + this.getNumQuizzes() +
+                ", uniqueQuizzesSolved=" + this.getUniqueQuizzesSolved() +
+                ", avetageQuizzesSolved=" + this.getAverageQuizzesSolved() +
                 "}";
     }
 }
