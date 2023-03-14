@@ -26,15 +26,15 @@ public class TeacherDashboard implements DomainEntity {
     @ManyToOne
     private Teacher teacher;
 
-    @OneToMany(mappedBy = "teacherDashboard", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "teacherDashboard", cascade = CascadeType.ALL, orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<QuestionStats> questionStats = new ArrayList<>();
 
-    @OneToMany(mappedBy = "teacherDashboard", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "teacherDashboard", cascade = CascadeType.ALL, orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<StudentStats> studentStats = new ArrayList<>();
 
-    @OneToMany(mappedBy = "teacherDashboard", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "teacherDashboard", cascade = CascadeType.ALL, orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<QuizStats> quizStats = new ArrayList<>();
 
