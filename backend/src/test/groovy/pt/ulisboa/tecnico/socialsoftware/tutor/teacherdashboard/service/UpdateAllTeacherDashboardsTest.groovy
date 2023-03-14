@@ -29,7 +29,7 @@ class UpdateAllTeacherDashboardsTest extends SpockTest {
         teacher.addCourse(externalCourseExecution)
     }
 
-    def "create an empty dashboard"() {
+    def "updateTeacherDashboard"() {
         given: "a teacherDashboard"
         teacherDashboardService.getTeacherDashboard(externalCourseExecution.getId(), teacher.getId())
         def result = teacherDashboardRepository.findAll().get(0)
@@ -41,19 +41,20 @@ class UpdateAllTeacherDashboardsTest extends SpockTest {
         then: "updateTeacherDashboard is called"
         result.getQuizStats().get(0).getNumQuizzes() == 1
     }
-    /*def "test updateAllTeacherDashboards method"() {
-        given:
-        student1 = new Student(USER_3_NAME, false)
-        userRepository.save(student1)
 
-        when:
+    def "updateAllTeacherDashboards"() {
+        given: "a teacherDashboard"
+        teacherDashboardService.getTeacherDashboard(externalCourseExecution.getId(), teacher.getId())
+        Quiz quiz = new Quiz()
+        quiz.setCourseExecution(externalCourseExecution)
+
+        when: "update all teacherDashboards, just one"
         teacherDashboardService.updateAllTeacherDashboards()
 
-        then:
-        1 * teacherDashboardService.updateTeacherDashboard(td1.getId())
-        1 * teacherDashboardService.updateTeacherDashboard(td2.getId())
-    }*/
-
+        then: "updateTeacherDashboard is called once"
+        def result = teacherDashboardRepository.findAll().get(0)
+        result.getQuizStats().get(0).getNumQuizzes() == 1
+    }
 
     def "cannot update all teacher dashboards when there are no dashboards"() {
         when: "the course execution status is updated"
@@ -66,20 +67,6 @@ class UpdateAllTeacherDashboardsTest extends SpockTest {
         exception.getErrorMessage() == ErrorMessage.NO_TEACHER_DASHBOARDS
     }
 
- /*   def "cannot update all teacher dashboards when there are dashboards without a teacher"() {
-        given: "a dashboard for a course execution without a teacher"
-        teacherDashboardService.createTeacherDashboard(courseExecution.getId(), student1.getId())
-
-        when: "the course execution status is updated"
-        courseExecution.setStatus(CourseExecutionStatus.INACTIVE)
-        courseExecutionRepository.save(courseExecution)
-        teacherDashboardService.updateAllTeacherDashboards()
-
-        then: "exception is thrown"
-        def exception = thrown(TutorException)
-        exception.getErrorMessage() == ErrorMessage.TEACHER_DASHBOARD_NOT_FOUND
-    
-    }*/
     @TestConfiguration
     static class LocalBeanConfiguration extends BeanConfiguration {}
 }
