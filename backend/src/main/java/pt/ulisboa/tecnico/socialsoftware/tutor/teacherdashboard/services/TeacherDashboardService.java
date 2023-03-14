@@ -88,16 +88,13 @@ public class TeacherDashboardService {
         // and sort them by year
         Integer courseId = courseExecution.getCourse().getId();
         List<Integer> courseExecutionIds = new ArrayList<>(courseExecutionRepository.getCourseExecutionsIdByCourseId(courseId).stream().filter(id -> {
-            CourseExecution execution = courseExecutionRepository.findById(id).orElse(null);
+            CourseExecution execution = courseExecutionRepository.getById(id);
             return execution.getTeachers().stream().anyMatch(t -> t.getId() == teacher.getId());
         }).collect(Collectors.toList()));
 
         courseExecutionIds.sort((id1, id2) -> {
-            CourseExecution ce1 = courseExecutionRepository.findById(id1).orElse(null);
-            CourseExecution ce2 = courseExecutionRepository.findById(id2).orElse(null);
-            if (ce1 == null || ce2 == null) {
-                return 0;
-            }
+            CourseExecution ce1 = courseExecutionRepository.getById(id1);
+            CourseExecution ce2 = courseExecutionRepository.getById(id2);
             return Integer.compare(ce2.getYear(), ce1.getYear());
         });
 
