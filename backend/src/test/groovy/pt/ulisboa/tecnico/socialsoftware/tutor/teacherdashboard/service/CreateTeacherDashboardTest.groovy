@@ -9,6 +9,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.Teacher
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Course;
 import pt.ulisboa.tecnico.socialsoftware.tutor.execution.domain.CourseExecution;
+import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.dto.QuizDto;
 import spock.lang.Unroll
 
 @DataJpaTest
@@ -20,6 +21,20 @@ import spock.lang.Unroll
         courseExecutionRepository.save(courseExecution)
 
         return courseExecution
+    }
+
+    def createQuizDto(int key, String title) {
+        def quizDto = new QuizDto()
+        quizDto.setKey(key)
+        quizDto.setTitle(title)
+        quizDto.setScramble(true)
+        quizDto.setOneWay(true)
+        quizDto.setQrCodeOnly(true)
+        quizDto.setAvailableDate(STRING_DATE_TODAY)
+        quizDto.setConclusionDate(STRING_DATE_TOMORROW)
+        quizDto.setResultsDate(STRING_DATE_LATER)
+
+        return quizDto
     }
 
     def setup() {
@@ -336,6 +351,47 @@ import spock.lang.Unroll
         teacherDashboard.getQuestionStats().get(0).getCourseExecution().getId() == courseExecution5.getId()
         teacherDashboard.getQuestionStats().get(1).getCourseExecution().getId() == courseExecution3.getId()
         teacherDashboard.getQuestionStats().get(2).getCourseExecution().getId() == courseExecution2.getId()
+    }
+
+    def "create a dashboard with a course execution that has a quiz"() {
+        given: "a teacher in a course execution"
+        def courseExecution = createCourseExecution(externalCourse, "1º Semestre 2020/2021")
+        teacher.addCourse(courseExecution)
+
+        when: "a quiz is added to the course execution"
+        def quizDto = createQuizDto(1, "Quiz 1")
+        quizService.createQuiz(courseExecution.getId(), quizDto)
+
+        and: "a dashboard is created"
+        def teacherDashboardDto = teacherDashboardService.createTeacherDashboard(courseExecution.getId(), teacher.getId())
+
+        then: "the quiz stats have been created and have the correct values"
+        teacherDashboardDto.getNumQuizzes() == [1]
+        teacherDashboardDto.getUniqueQuizzesSolved() == [0]
+        teacherDashboardDto.getAverageQuizzesSolved() == [0f]
+
+        and: "the student stats have the correct values"
+        teacherDashboardDto.getNumOfStudents() == [0]
+        teacherDashboardDto.getNumMore75CorrectQuestions() == [0]
+        teacherDashboardDto.getNumAtLeast3Quizzes() == [0]
+
+        and: "the question stats have the correct values"
+        teacherDashboardDto.getNumAQuestionsAvailable() == [0]
+        teacherDashboardDto.getUniqueQuestionsAnswered() == [0]
+        teacherDashboardDto.getAverageQuestionsAnswered() == [0f]
+
+        and: "the course execution associated with the quiz stats is the most recent"
+        def teacherDashboard = teacherDashboardRepository.findAll().get(0)
+        teacherDashboard.getQuizStats().size() == 1
+        teacherDashboard.getQuizStats().get(0).getCourseExecution().getId() == courseExecution.getId()
+
+        and: "the course execution associated with the student stats is the most recent"
+        teacherDashboard.getStudentStats().size() == 1
+        teacherDashboard.getStudentStats().get(0).getCourseExecution().getId() == courseExecution.getId()
+
+        and: "the course execution associated with the question stats is the most recent"
+        teacherDashboard.getQuestionStats().size() == 1
+        teacherDashboard.getQuestionStats().get(0).getCourseExecution().getId() == courseExecution.getId()
     }
 
     @TestConfiguration
