@@ -19,7 +19,7 @@ public class StudentStats implements DomainEntity{
 
     private int numAtLeast3Quizzes;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private TeacherDashboard teacherDashboard;
 
     @OneToOne

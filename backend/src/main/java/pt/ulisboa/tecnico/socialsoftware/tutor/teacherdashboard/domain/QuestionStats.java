@@ -27,7 +27,7 @@ public class QuestionStats implements DomainEntity {
     @OneToOne
     private CourseExecution courseExecution;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private TeacherDashboard teacherDashboard;
 
     private int numAvailable;
