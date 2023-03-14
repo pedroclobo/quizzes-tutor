@@ -85,7 +85,7 @@ public class TeacherDashboardService {
         TeacherDashboard teacherDashboard = new TeacherDashboard(courseExecution, teacher);
 
         // Get course execution ids from the current course
-        // and sort them by year
+        // associated with the teacher and sort them by year
         Integer courseId = courseExecution.getCourse().getId();
         List<Integer> courseExecutionIds = new ArrayList<>(courseExecutionRepository.getCourseExecutionsIdByCourseId(courseId).stream().filter(id -> {
             CourseExecution execution = courseExecutionRepository.getById(id);
