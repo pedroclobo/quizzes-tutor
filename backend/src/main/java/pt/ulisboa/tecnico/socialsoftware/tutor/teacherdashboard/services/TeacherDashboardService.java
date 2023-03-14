@@ -98,18 +98,21 @@ public class TeacherDashboardService {
             return Integer.compare(ce2.getYear(), ce1.getYear());
         });
 
-        // Create the stats for the latest 3 course executions
+        // Create the stats for the latest 3 course executions and update them
         for (int i = 0; i < Math.min(courseExecutionIds.size(), 3); i++) {
             CourseExecution latestCourseExecution = courseExecutionRepository.findById(courseExecutionIds.get(i)).orElse(null);
-            if (courseExecution != null) {
-                QuizStats quizStats = new QuizStats(latestCourseExecution, teacherDashboard);
-                StudentStats studentStats = new StudentStats(latestCourseExecution, teacherDashboard);
-                QuestionStats questionStats = new QuestionStats(latestCourseExecution, teacherDashboard);
 
-                quizStatsRepository.save(quizStats);
-                studentStatsRepository.save(studentStats);
-                questionStatsRepository.save(questionStats);
-            }
+            QuizStats quizStats = new QuizStats(latestCourseExecution, teacherDashboard);
+            StudentStats studentStats = new StudentStats(latestCourseExecution, teacherDashboard);
+            QuestionStats questionStats = new QuestionStats(latestCourseExecution, teacherDashboard);
+
+            quizStats.update();
+            studentStats.update();
+            questionStats.update();
+
+            quizStatsRepository.save(quizStats);
+            studentStatsRepository.save(studentStats);
+            questionStatsRepository.save(questionStats);
         }
 
         teacherDashboardRepository.save(teacherDashboard);
