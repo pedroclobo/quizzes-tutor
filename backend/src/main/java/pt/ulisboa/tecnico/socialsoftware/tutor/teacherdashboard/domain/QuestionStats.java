@@ -3,17 +3,9 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain;
 import pt.ulisboa.tecnico.socialsoftware.tutor.execution.domain.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.DomainEntity;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
-import pt.ulisboa.tecnico.socialsoftware.tutor.questionsubmission.domain.QuestionSubmission;
-import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.Student;
-import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question.Status;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Arrays;
 
 import javax.persistence.*;
 
