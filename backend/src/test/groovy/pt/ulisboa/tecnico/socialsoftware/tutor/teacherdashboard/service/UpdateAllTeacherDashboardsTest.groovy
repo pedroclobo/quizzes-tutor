@@ -33,7 +33,8 @@ class UpdateAllTeacherDashboardsTest extends SpockTest {
         given: "a teacherDashboard"
         teacherDashboardService.getTeacherDashboard(externalCourseExecution.getId(), teacher.getId())
         def result = teacherDashboardRepository.findAll().get(0)
-        externalCourseExecution.addQuiz(new Quiz())
+        def quiz = createQuiz(1, "Quiz 1")
+        externalCourseExecution.addQuiz(quiz)
 
         when: "update teacherDashboard"
         teacherDashboardService.updateTeacherDashboard(result.getId())
@@ -45,7 +46,7 @@ class UpdateAllTeacherDashboardsTest extends SpockTest {
     def "updateAllTeacherDashboards"() {
         given: "a teacherDashboard"
         teacherDashboardService.getTeacherDashboard(externalCourseExecution.getId(), teacher.getId())
-        Quiz quiz = new Quiz()
+        def quiz = createQuiz(1, "Quiz 1")
         quiz.setCourseExecution(externalCourseExecution)
 
         when: "update all teacherDashboards, just one"
