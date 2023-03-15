@@ -244,6 +244,56 @@ import spock.lang.Unroll
         teacherDashboard.getQuestionStats().get(2).getCourseExecution().getId() == courseExecution3.getId()
     }
 
+    def "create a dashboard with the teacher associated with four course executions, with one of them having an invalid year"() {
+        given: "a teacher in three course executions"
+        def courseExecution1 = createCourseExecution(externalCourse, "1º Semestre 2021/2022")
+        def courseExecution2 = createCourseExecution(externalCourse, "1º Semestre 20202021")
+        def courseExecution3 = createCourseExecution(externalCourse, "1º Semestre 2019/2020")
+        def courseExecution4 = createCourseExecution(externalCourse, "1º Semestre 2017/2018")
+
+        teacher.addCourse(courseExecution1)
+        teacher.addCourse(courseExecution2)
+        teacher.addCourse(courseExecution3)
+        teacher.addCourse(courseExecution4)
+
+        when: "a dashboard is created"
+        def dashboard = teacherDashboardService.createTeacherDashboard(courseExecution1.getId(), teacher.getId())
+
+        then: "the quiz stats have been created and have the correct values"
+        dashboard.getNumQuizzes() == [0, 0, 0]
+        dashboard.getUniqueQuizzesSolved() == [0, 0, 0]
+        dashboard.getAverageQuizzesSolved() == [0f, 0f, 0f]
+
+        and: "the student stats have the correct values"
+        dashboard.getNumOfStudents() == [0, 0, 0]
+        dashboard.getNumMore75CorrectQuestions() == [0, 0, 0]
+        dashboard.getNumAtLeast3Quizzes() == [0, 0, 0]
+
+        and: "the question stats have the correct values"
+        dashboard.getNumAQuestionsAvailable() == [0, 0, 0]
+        dashboard.getUniqueQuestionsAnswered() == [0, 0, 0]
+        dashboard.getAverageQuestionsAnswered() == [0f, 0f, 0f]
+
+        and: "the course executions associated with the quiz stats are the most recent"
+        def teacherDashboard = teacherDashboardRepository.findAll().get(0)
+        teacherDashboard.getQuizStats().size() == 3
+        teacherDashboard.getQuizStats().get(0).getCourseExecution().getId() == courseExecution1.getId()
+        teacherDashboard.getQuizStats().get(1).getCourseExecution().getId() == courseExecution3.getId()
+        teacherDashboard.getQuizStats().get(2).getCourseExecution().getId() == courseExecution4.getId()
+
+        and: "the course executions associated with the student stats are the most recent"
+        teacherDashboard.getStudentStats().size() == 3
+        teacherDashboard.getStudentStats().get(0).getCourseExecution().getId() == courseExecution1.getId()
+        teacherDashboard.getStudentStats().get(1).getCourseExecution().getId() == courseExecution3.getId()
+        teacherDashboard.getStudentStats().get(2).getCourseExecution().getId() == courseExecution4.getId()
+
+        and: "the course executions associated with the question stats are the most recent"
+        teacherDashboard.getQuestionStats().size() == 3
+        teacherDashboard.getQuestionStats().get(0).getCourseExecution().getId() == courseExecution1.getId()
+        teacherDashboard.getQuestionStats().get(1).getCourseExecution().getId() == courseExecution3.getId()
+        teacherDashboard.getQuestionStats().get(2).getCourseExecution().getId() == courseExecution4.getId()
+    }
+
     def "create a dashboard with the teacher associated with five course executions"() {
         given: "a teacher in five course executions"
         def courseExecution1 = createCourseExecution(externalCourse, "1º Semestre 2017/2018")
