@@ -19,7 +19,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.repository.Teach
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.Teacher;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.repository.TeacherRepository;
 
-
 import java.util.*;
 import java.util.stream.Collectors;
 
