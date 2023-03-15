@@ -67,6 +67,16 @@ class UpdateAllTeacherDashboardsTest extends SpockTest {
         exception.getErrorMessage() == ErrorMessage.NO_TEACHER_DASHBOARDS
     }
 
+    def "update a non-existent dashboard"() {
+        when: "update teacherDashboard"
+        teacherDashboardService.updateTeacherDashboard(2)
+
+        then: "Exception is thrown"
+        def exception = thrown(TutorException)
+        exception.getErrorMessage() == ErrorMessage.DASHBOARD_NOT_FOUND
+        
+    }
+
     @TestConfiguration
     static class LocalBeanConfiguration extends BeanConfiguration {}
 }
