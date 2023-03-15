@@ -88,8 +88,14 @@ public class TeacherDashboardService {
         // associated with the teacher and sort them by year
         Integer courseId = courseExecution.getCourse().getId();
         List<Integer> courseExecutionIds = new ArrayList<>(courseExecutionRepository.getCourseExecutionsIdByCourseId(courseId).stream().filter(id -> {
-            CourseExecution execution = courseExecutionRepository.getById(id);
-            return execution.getTeachers().stream().anyMatch(t -> t.getId() == teacher.getId());
+            // Filter out course executions that do not have a valid getYear()
+            try {
+                CourseExecution execution = courseExecutionRepository.getById(id);
+                execution.getYear();
+                return execution.getTeachers().stream().anyMatch(t -> t.getId() == teacher.getId());
+            } catch (IllegalStateException e) {
+                return false;
+            }
         }).collect(Collectors.toList()));
 
         courseExecutionIds.sort((id1, id2) -> {
