@@ -74,7 +74,6 @@ class UpdateAllTeacherDashboardsTest extends SpockTest {
         then: "Exception is thrown"
         def exception = thrown(TutorException)
         exception.getErrorMessage() == ErrorMessage.DASHBOARD_NOT_FOUND
-        
     }
 
     @TestConfiguration
