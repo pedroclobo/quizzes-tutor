@@ -91,8 +91,7 @@ public class TeacherDashboardService {
             // Filter out course executions that do not have a valid getYear()
             try {
                 CourseExecution execution = courseExecutionRepository.getById(id);
-                execution.getYear();
-                return execution.getTeachers().stream().anyMatch(t -> t.getId() == teacher.getId());
+                return execution.getTeachers().stream().anyMatch(t -> t.getId() == teacher.getId()) && execution.getYear() <= courseExecution.getYear();
             } catch (IllegalStateException e) {
                 return false;
             }
