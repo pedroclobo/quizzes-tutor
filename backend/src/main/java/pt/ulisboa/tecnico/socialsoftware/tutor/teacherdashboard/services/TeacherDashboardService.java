@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.execution.domain.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.execution.repository.CourseExecutionRepository;
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Course;
 import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain.QuestionStats;
 import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain.QuizStats;
 import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain.StudentStats;
@@ -144,6 +145,19 @@ public class TeacherDashboardService {
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public void updateAllTeacherDashboards() {
         List<TeacherDashboard> dashboards = teacherDashboardRepository.findAll();
+        List<Teacher> teachers = teacherRepository.findAll();
+        List<CourseExecution> courseExecutions = courseExecutionRepository.findAll();
+
+        for(Teacher teacher : teachers) {
+            for(CourseExecution courseExecution : courseExecutions) {
+                //If teacher doesn't have dashboard with courseExecution, create one
+                if(!teacher.getDashboards().stream().anyMatch(dashboard -> dashboard.getCourseExecution().equals(courseExecution))) {
+                    TeacherDashboard teachDash = new TeacherDashboard(courseExecution, teacher);
+                    teacher.addDashboard(teachDash);
+                    
+                }
+            }
+        }
         if(dashboards.size() == 0) {
             throw new TutorException(NO_TEACHER_DASHBOARDS);
         }

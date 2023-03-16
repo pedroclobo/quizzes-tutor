@@ -20,13 +20,28 @@ import javax.transaction.Transactional
 @Transactional
 class UpdateAllTeacherDashboardsTest extends SpockTest {
     def teacher
+    def teacher2
 
     def setup() {
+        //There is already an element in courseExecutionRepository before createExternalCourseAndExecution
         createExternalCourseAndExecution()
-
         teacher = new Teacher(USER_1_NAME, false)
         userRepository.save(teacher)
         teacher.addCourse(externalCourseExecution)
+        teacher2 = new Teacher(USER_2_NAME, false)
+        userRepository.save(teacher2)
+    }
+
+    def "Create teacherDashboard from updateAllTeacherDashboards"() {
+        given: "a teacherDashboard"
+        teacherDashboardService.getTeacherDashboard(externalCourseExecution.getId(), teacher.getId())
+
+        when:
+        teacherDashboardService.updateAllTeacherDashboards()
+
+
+        then:"A teacher dashboard is created"
+        teacherDashboardRepository.findAll().size() == 4
     }
 
     def "updateTeacherDashboard"() {
