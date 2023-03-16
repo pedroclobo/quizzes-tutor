@@ -23,7 +23,7 @@ class UpdateAllTeacherDashboardsTest extends SpockTest {
     def teacher2
 
     def setup() {
-        //There is already an element in courseExecutionRepository before createExternalCourseAndExecution
+
         createExternalCourseAndExecution()
         teacher = new Teacher(USER_1_NAME, false)
         userRepository.save(teacher)
@@ -33,15 +33,16 @@ class UpdateAllTeacherDashboardsTest extends SpockTest {
     }
 
     def "Create teacherDashboard from updateAllTeacherDashboards"() {
-        given: "a teacherDashboard"
+        given: "A course added to teacher without teacherDashboard"
         teacherDashboardService.getTeacherDashboard(externalCourseExecution.getId(), teacher.getId())
+        teacher2.addCourse(externalCourseExecution)
 
         when:
         teacherDashboardService.updateAllTeacherDashboards()
 
 
         then:"A teacher dashboard is created"
-        teacherDashboardRepository.findAll().size() == 4
+        teacherDashboardRepository.findAll().size() == 2
     }
 
     def "updateTeacherDashboard"() {

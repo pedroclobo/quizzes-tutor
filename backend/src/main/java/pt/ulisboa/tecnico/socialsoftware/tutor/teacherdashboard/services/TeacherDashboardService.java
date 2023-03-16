@@ -151,7 +151,8 @@ public class TeacherDashboardService {
         for(Teacher teacher : teachers) {
             for(CourseExecution courseExecution : courseExecutions) {
                 //If teacher doesn't have dashboard with courseExecution, create one
-                if(!teacher.getDashboards().stream().anyMatch(dashboard -> dashboard.getCourseExecution().equals(courseExecution))) {
+                if(teacher.getCourseExecutions().contains(courseExecution) &&
+                !teacher.getDashboards().stream().anyMatch(dashboard -> dashboard.getCourseExecution().equals(courseExecution))) {
                     TeacherDashboard teachDash = new TeacherDashboard(courseExecution, teacher);
                     teacher.addDashboard(teachDash);
                     
