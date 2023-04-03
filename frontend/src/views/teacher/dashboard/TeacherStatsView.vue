@@ -28,9 +28,35 @@
           <p>Number of Students who Solved >= 3 Quizzes</p>
         </div>
       </div>
-    </div>
 
-</div>
+      <div class="items">
+        <div ref="numQuizzes" class="icon-wrapper">
+          <animated-number :number="teacherDashboard.quizStats[0].numQuizzes" />
+        </div>
+        <div class="project-name">
+          <p>Number of Quizzes</p>
+        </div>
+      </div>
+
+      <div class="items">
+        <div ref="numUniqueAnsweredQuizzes" class="icon-wrapper">
+          <animated-number :number="teacherDashboard.quizStats[0].numUniqueAnsweredQuizzes" />
+        </div>
+        <div class="project-name">
+          <p>Number of Quizzes Solved (Unique)</p>
+        </div>
+      </div>
+
+      <div class="items">
+        <div ref="averageQuizzesSolved" class="icon-wrapper">
+          <animated-number :number="teacherDashboard.quizStats[0].averageQuizzesSolved" />
+        </div>
+        <div class="project-name">
+          <p>Number of Quizzes Solved (Unique, Average Per Student)</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
