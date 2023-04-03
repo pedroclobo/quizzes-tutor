@@ -11,7 +11,7 @@
         </div>
       </div>
 
-    <div class="items">
+      <div class="items">
         <div ref="numMore75CorrectQuestions" class="icon-wrapper">
           <animated-number :number="teacherDashboard.studentStats[0].numMore75CorrectQuestions" />
         </div>
@@ -20,7 +20,7 @@
         </div>
       </div>
 
-    <div class="items">
+      <div class="items">
         <div ref="numAtLeast3Quizzes" class="icon-wrapper">
           <animated-number :number="teacherDashboard.studentStats[0].numAtLeast3Quizzes" />
         </div>
