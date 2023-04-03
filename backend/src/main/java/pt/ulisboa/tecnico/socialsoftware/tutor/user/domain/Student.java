@@ -7,11 +7,9 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.discussion.domain.Discussion;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.execution.domain.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.CourseRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.questionsubmission.domain.QuestionSubmission;
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
 import pt.ulisboa.tecnico.socialsoftware.tutor.tournament.domain.Tournament;
-import pt.ulisboa.tecnico.socialsoftware.tutor.user.dto.StudentDto;
 
 import javax.persistence.*;
 import java.util.*;
@@ -36,8 +34,6 @@ public class Student extends User {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "student", orphanRemoval = true)
     private Set<StudentDashboard> studentDashboards = new HashSet<>();
-
-    private StudentDto dto;
 
     public Student() {
     }
@@ -184,10 +180,6 @@ public class Student extends User {
                 .filter(dashboard -> dashboard.getCourseExecution() == courseExecution)
                 .findAny()
                 .orElse(null);
-    }
-
-    public int getNumberOfStudentQuizzes() {
-        return dto.getNumberOfStudentAnswers();
     }
 
     @Override

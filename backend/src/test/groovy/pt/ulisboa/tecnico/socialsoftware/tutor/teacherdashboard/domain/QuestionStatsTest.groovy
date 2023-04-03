@@ -32,7 +32,7 @@ class QuestionStatsTest extends SpockTest {
     def setup() {
         createExternalCourseAndExecution()
 
-        def teacher =  new Teacher(USER_3_NAME, USER_3_USERNAME, USER_3_EMAIL, false, AuthUser.Type.TECNICO)
+        def teacher = new Teacher(USER_1_NAME, false)
         userRepository.save(teacher)
 
         teacherDashboard = new TeacherDashboard(externalCourseExecution, teacher)
@@ -55,7 +55,7 @@ class QuestionStatsTest extends SpockTest {
     } 
 
     def createQuestionStats() {
-        def questionStats = new QuestionStats(externalCourseExecution, teacherDashboard)
+        def questionStats = new QuestionStats(teacherDashboard, externalCourseExecution)
         questionStatsRepository.save(questionStats)
         return questionStats
     }
@@ -142,7 +142,7 @@ class QuestionStatsTest extends SpockTest {
         
         and: "a question stat is returned"
         result.getNumAvailable() == 0
-        result.getUniqueQuestionsAnswered() == 0
+        result.getAnsweredQuestionsUnique() == 0
         result.getAverageQuestionsAnswered() == 0.0f
 
         and: "the dashboard has a reference for the question stat"
@@ -166,7 +166,7 @@ class QuestionStatsTest extends SpockTest {
         
         and: "a question stat is returned"
         result.getNumAvailable() == 0
-        result.getUniqueQuestionsAnswered() == 0
+        result.getAnsweredQuestionsUnique() == 0
         result.getAverageQuestionsAnswered() == 0.0f
 
         and: "the dashboard has a reference for the question stat"
@@ -207,7 +207,7 @@ class QuestionStatsTest extends SpockTest {
         stats.update()
 
         then: "the stats are correct"
-        stats.getUniqueQuestionsAnswered() == 2
+        stats.getAnsweredQuestionsUnique() == 2
         stats.getAverageQuestionsAnswered() == (float)3/2
         stats.getNumAvailable() == 3
     }
@@ -249,10 +249,10 @@ class QuestionStatsTest extends SpockTest {
 
         res.equals ("QuestionStats{" +
             "id=" + stats.getId() +
-            ", courseExecution=" + externalCourseExecution +
-            ", teacherDashboard=" + teacherDashboard +
+            ", teacherDashboard=" + teacherDashboard.getId() +
+            ", courseExecution=" + externalCourseExecution.getId() +
             ", numAvailable=" + 3 +
-            ", uniqueQuestionsAnswered=" + 2 +
+            ", answeredQuestionsUnique=" + 2 +
             ", averageQuestionsAnswered=" + (float) 3/2 +
             '}');
     }
@@ -306,7 +306,7 @@ class QuestionStatsTest extends SpockTest {
         def statsLst = teacherDashboard.getQuestionStats()
         statsLst.size() == 1
         def stats2 = statsLst.get(0)
-        stats2.getUniqueQuestionsAnswered() == 2
+        stats2.getAnsweredQuestionsUnique() == 2
         stats2.getAverageQuestionsAnswered() == (float)3/2
         stats2.getNumAvailable() == 3
     }

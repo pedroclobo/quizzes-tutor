@@ -1,11 +1,11 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain;
 
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.execution.domain.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.DomainEntity;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
-import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question.Status;
-import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
+import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion;
 
 import javax.persistence.*;
 
@@ -17,127 +17,106 @@ public class QuestionStats implements DomainEntity {
     private Integer id;
 
     @OneToOne
-    private CourseExecution courseExecution;
+    private CourseExecution execution;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private TeacherDashboard teacherDashboard;
+    @ManyToOne
+    private TeacherDashboard dashboard;
 
-    private int numAvailable;
-    private int uniqueQuestionsAnswered;
-    private float averageQuestionsAnswered;
+    private Integer numAvailable, answeredQuestionsUnique;
+    private Float averageQuestionsAnswered;
 
-    public QuestionStats() {
-    }
+    public QuestionStats () {}
 
-    public QuestionStats(CourseExecution courseExecution, TeacherDashboard teacherDashboard) {
-        setCourseExecution(courseExecution);
-        setTeacherDashboard(teacherDashboard);
+    public QuestionStats (TeacherDashboard dashboard, CourseExecution execution) {
+        setDashboard(dashboard);
+        setCourseExecution(execution);
         numAvailable = 0;
-        uniqueQuestionsAnswered = 0;
-        averageQuestionsAnswered = 0.0f;
+        answeredQuestionsUnique = 0;
+        averageQuestionsAnswered = 0.0f;        
     }
 
-    public void remove() {
-        teacherDashboard.getQuestionStats().remove(this);
-        teacherDashboard = null;
+    public void setDashboard (TeacherDashboard dashboard) {
+        this.dashboard = dashboard;
+        dashboard.addQuestionStats(this);
+    }
+
+    public void setCourseExecution (CourseExecution execution) {
+        this.execution = execution;
+    }
+
+    public CourseExecution getCourseExecution () {
+        return this.execution;
+    }
+
+    public TeacherDashboard getTeacherDashboard () {
+        return this.dashboard;
     }
 
     public Integer getId() {
-        return id;
+        return this.id;
     }
 
-    public CourseExecution getCourseExecution() {
-        return courseExecution;
+    public void remove () {
+        execution = null;
+        dashboard.getQuestionStats().remove(this);
+        dashboard = null;
     }
 
-    public void setCourseExecution(CourseExecution courseExecution) {
-        this.courseExecution = courseExecution;
+    public Integer getNumAvailable() {
+        return this.numAvailable;
     }
 
-    public TeacherDashboard getTeacherDashboard() {
-        return teacherDashboard;
+    public Integer getAnsweredQuestionsUnique() {
+        return this.answeredQuestionsUnique;
     }
 
-    public void setTeacherDashboard(TeacherDashboard teacherDashboard) {
-        this.teacherDashboard = teacherDashboard;
-        this.teacherDashboard.addQuestionStats(this);
+    public Float getAverageQuestionsAnswered() {
+        return this.averageQuestionsAnswered;
     }
 
-    public int getNumAvailable() {
-        return numAvailable;
-    }
-
-    public void setNumAvailable(int numAvailable) {
-        this.numAvailable = numAvailable;
-    }
-
-    public int getUniqueQuestionsAnswered() {
-        return uniqueQuestionsAnswered;
-    }
-
-    public void setUniqueQuestionsAnswered(int uniqueQuestionsAnswered) {
-        this.uniqueQuestionsAnswered = uniqueQuestionsAnswered;
-    }
-
-    public float getAverageQuestionsAnswered() {
-        return averageQuestionsAnswered;
-    }
-
-    public void setAverageQuestionsAnswered(float averageQuestionsAnswered) {
-        this.averageQuestionsAnswered = averageQuestionsAnswered;
-    }
-
-    public void updateNumAvailable() {
-        this.numAvailable = (int) courseExecution.getQuizzes().stream()
+    public void update() {
+        // number of available questions
+        this.numAvailable = (int) execution.getQuizzes().stream()
             .flatMap(q -> q.getQuizQuestions().stream())
             .map(QuizQuestion::getQuestion)
             .filter(q -> q.getStatus() == Status.AVAILABLE)
             .distinct()
             .count();
-    }
-
-    public void updateUniqueQuestionsAnswered() {
-        this.uniqueQuestionsAnswered = (int) courseExecution.getQuizzes().stream()
+        
+        // number of answered questions at least once
+        this.answeredQuestionsUnique = (int) execution.getQuizzes().stream()
                 .flatMap(q -> q.getQuizAnswers() .stream()
                     .flatMap(qa -> qa.getQuestionAnswers().stream()
                         .map(QuestionAnswer::getQuestion)))
             .distinct()
             .count();
-    }
 
-    public void updateAverageQuestionsAnswered() {
-        int students = courseExecution.getStudents().size();
+        // number of students 
+        int students = execution.getStudents().size();
 
-        long uniqueAllStudents = courseExecution.getStudents().stream().mapToLong(student -> 
+        long uniqueAllStudents = execution.getStudents().stream().mapToLong(student -> 
             student.getQuizAnswers().stream().flatMap(
                 qa -> qa.getQuestionAnswers().stream().map(QuestionAnswer::getQuestion)
             ).distinct().count()).sum();
 
+        // average
         this.averageQuestionsAnswered = students > 0 ? (float) uniqueAllStudents / students : 0.0f;
     }
 
-
+    @Override
     public void accept(Visitor visitor) {
-        // Only used for XML generation
+        
     }
-
-    public void update() {
-        updateNumAvailable();
-        updateUniqueQuestionsAnswered();
-        updateAverageQuestionsAnswered();
-    }
-
 
     @Override
     public String toString() {
         return "QuestionStats{" +
             "id=" + id +
-            ", courseExecution=" + courseExecution +
-            ", teacherDashboard=" + teacherDashboard +
+            ", teacherDashboard=" + dashboard.getId() +
+            ", courseExecution=" + execution.getId() +
             ", numAvailable=" + numAvailable +
-            ", uniqueQuestionsAnswered=" + uniqueQuestionsAnswered +
+            ", answeredQuestionsUnique=" + answeredQuestionsUnique +
             ", averageQuestionsAnswered=" + averageQuestionsAnswered +
             '}';
       }
-
 }

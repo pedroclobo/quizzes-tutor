@@ -5,14 +5,12 @@ import org.springframework.boot.test.context.TestConfiguration
 import pt.ulisboa.tecnico.socialsoftware.tutor.BeanConfiguration
 import pt.ulisboa.tecnico.socialsoftware.tutor.SpockTest
 import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain.TeacherDashboard
+import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain.QuestionStats
+import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain.StudentStats
+import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain.QuizStats
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.Teacher
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Course;
-import pt.ulisboa.tecnico.socialsoftware.tutor.execution.domain.CourseExecution;
-import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.repository.QuestionStatsRepository;
-import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.repository.QuizStatsRepository;
-import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.repository.StudentStatsRepository;
 import spock.lang.Unroll
 
 @DataJpaTest
@@ -33,13 +31,6 @@ class RemoveTeacherDashboardTest extends SpockTest {
         return dashboard
     }
 
-    def createCourseExecution(Course course, String academicTerm) {
-        def courseExecution = new CourseExecution(course, COURSE_1_ACRONYM, academicTerm, Course.Type.TECNICO, LOCAL_DATE_TODAY)
-        courseExecutionRepository.save(courseExecution)
-
-        return courseExecution
-    }
-
     def "remove a dashboard"() {
         given: "a dashboard"
         def dashboard = createTeacherDashboard()
@@ -48,8 +39,61 @@ class RemoveTeacherDashboardTest extends SpockTest {
         teacherDashboardService.removeTeacherDashboard(dashboard.getId())
 
         then: "the dashboard is removed"
-        teacherDashboardRepository.findAll().size() == 0L
+        teacherDashboardRepository.findAll().size() == 0
         teacher.getDashboards().size() == 0
+    }
+
+    def "remove a dashboard and check that the associated quiz stats are also removed"() {
+        given: "a dashboard"
+        def dashboard = createTeacherDashboard()
+
+        and: "a quiz stats associated with the dashboard"
+        def quizStats = new QuizStats(dashboard, externalCourseExecution)
+        quizStatsRepository.save(quizStats)
+
+        when: "the user removes the dashboard"
+        teacherDashboardService.removeTeacherDashboard(dashboard.getId())
+
+        then: "the dashboard is removed"
+        teacherDashboardRepository.findAll().size() == 0
+        teacher.getDashboards().size() == 0
+
+        and: "quiz stats have been deleted"
+        quizStatsRepository.findAll().size() == 0
+    }
+
+    def "remove a dashboard and check that the associated student statistics are also removed"() {
+        given: "a dashboard with student statistics"
+        def dashboard = createTeacherDashboard()
+        def studentStats = new StudentStats(dashboard, externalCourseExecution)
+        studentStatsRepository.save(studentStats)
+
+        when: "the user removes the dashboard"
+        teacherDashboardService.removeTeacherDashboard(dashboard.getId())
+
+        then: "the dashboard is removed"
+        teacherDashboardRepository.findAll().size() == 0
+        teacher.getDashboards().size() == 0
+        
+        and: "the student statistics are removed"
+        studentStatsRepository.findAll().size() == 0
+    }
+
+    def "remove a dashboard and check that the associated question statistics are also removed"() {
+        given: "a dashboard with question statistics"
+        def dashboard = createTeacherDashboard()
+        def questionStats = new QuestionStats(dashboard, externalCourseExecution)
+        questionStatsRepository.save(questionStats)
+
+        when: "the user removes the dashboard"
+        teacherDashboardService.removeTeacherDashboard(dashboard.getId())
+
+        then: "the dashboard is removed"
+        teacherDashboardRepository.findAll().size() == 0
+        teacher.getDashboards().size() == 0
+
+        and: "the question statistics are removed"
+        questionStatsRepository.findAll().size() == 0
     }
 
     def "cannot remove a dashboard twice"() {
@@ -60,7 +104,7 @@ class RemoveTeacherDashboardTest extends SpockTest {
         when: "the dashboard is removed for the second time"
         teacherDashboardService.removeTeacherDashboard(dashboard.getId())
 
-        then: "an exception is thrown"        
+        then: "an exception is thrown"
         def exception = thrown(TutorException)
         exception.getErrorMessage() == ErrorMessage.DASHBOARD_NOT_FOUND
     }
@@ -76,38 +120,6 @@ class RemoveTeacherDashboardTest extends SpockTest {
 
         where:
         dashboardId << [null, 10, -1]
-    }
-
-    def "the dashboard is removed from the teacher"() {
-        given: "a dashboard"
-        def dashboard = createTeacherDashboard()
-
-        when: "the user removes the dashboard"
-        teacherDashboardService.removeTeacherDashboard(dashboard.getId())
-
-        then: "the dashboard is removed from the teacher"
-        teacher.getDashboards().size() == 0
-    }
-
-    def "the associated statistics are deleted"() {
-        given: "a teacher in three course executions"
-        def courseExecution1 = createCourseExecution(externalCourse, "1º Semestre 2021/2022")
-        def courseExecution2 = createCourseExecution(externalCourse, "1º Semestre 2020/2021")
-        def courseExecution3 = createCourseExecution(externalCourse, "1º Semestre 2019/2020")
-
-        teacher.addCourse(courseExecution1)
-        teacher.addCourse(courseExecution2)
-        teacher.addCourse(courseExecution3)
-
-        when: "a dashboard is created and than removed"
-        def result = teacherDashboardService.createTeacherDashboard(courseExecution1.getId(), teacher.getId())
-
-        teacherDashboardService.removeTeacherDashboard(result.getId())
-
-        then: "the associated statistics are deleted"
-        questionStatsRepository.findAll().size() == 0
-        quizStatsRepository.findAll().size() == 0
-        studentStatsRepository.findAll().size() == 0   
     }
 
     @TestConfiguration

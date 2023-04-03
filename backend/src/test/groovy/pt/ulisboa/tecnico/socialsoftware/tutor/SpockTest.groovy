@@ -12,6 +12,8 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.auth.AuthUserService
 import pt.ulisboa.tecnico.socialsoftware.tutor.auth.dto.AuthPasswordDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.auth.repository.AuthUserRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentdashboard.repository.StudentDashboardRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.repository.QuizStatsRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.repository.StudentStatsRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.repository.TeacherDashboardRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentdashboard.repository.DifficultQuestionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentdashboard.repository.FailedAnswerRepository
@@ -40,8 +42,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.*
 import pt.ulisboa.tecnico.socialsoftware.tutor.questionsubmission.QuestionSubmissionService
 import pt.ulisboa.tecnico.socialsoftware.tutor.questionsubmission.repository.QuestionSubmissionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.questionsubmission.repository.ReviewRepository
-import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz
-import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.dto.QuizDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.QuizService
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.repository.QuizQuestionRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.repository.QuizRepository
@@ -53,9 +53,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.UserService
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.repository.UserRepository
 import pt.ulisboa.tecnico.socialsoftware.tutor.utils.DateHandler
 import pt.ulisboa.tecnico.socialsoftware.tutor.utils.Mailer
-import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.repository.QuestionStatsRepository
-import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.repository.QuizStatsRepository
-import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.repository.StudentStatsRepository
+import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.repository.QuestionStatsRepository;
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -99,10 +97,6 @@ class SpockTest extends Specification {
     public static final String TOPIC_3_NAME = "Topic 3 Name"
 
     public static final String IMAGE_1_URL = "Image 1 URL"
-
-    public static final String QUIZ_1_NAME = "Quiz 1 Name"
-    public static final String QUIZ_2_NAME = "Quiz 2 Name"
-    public static final String QUIZ_3_NAME = "Quiz 3 Name"
 
     public static final LocalDateTime LOCAL_DATE_BEFORE = DateHandler.now().minusDays(2)
     public static final LocalDateTime LOCAL_DATE_YESTERDAY = DateHandler.now().minusDays(1)
@@ -196,6 +190,12 @@ class SpockTest extends Specification {
     TeacherDashboardRepository teacherDashboardRepository
 
     @Autowired
+    QuizStatsRepository quizStatsRepository
+
+    @Autowired
+    StudentStatsRepository studentStatsRepository
+
+    @Autowired
     WeeklyScoreService weeklyScoreService
 
     @Autowired
@@ -283,6 +283,9 @@ class SpockTest extends Specification {
     ReviewRepository reviewRepository
 
     @Autowired
+    QuestionStatsRepository questionStatsRepository
+
+    @Autowired
     UserApplicationalService userServiceApplicational
 
     @Autowired
@@ -306,15 +309,6 @@ class SpockTest extends Specification {
     @Autowired
     DemoService demoService
 
-    @Autowired
-    QuestionStatsRepository questionStatsRepository
-
-    @Autowired
-    StudentStatsRepository studentStatsRepository
-
-    @Autowired
-    QuizStatsRepository quizStatsRepository
-
     Course externalCourse
     @Shared
     CourseExecution externalCourseExecution
@@ -325,20 +319,6 @@ class SpockTest extends Specification {
 
         externalCourseExecution = new CourseExecution(externalCourse, COURSE_1_ACRONYM, COURSE_1_ACADEMIC_TERM, Course.Type.TECNICO, LOCAL_DATE_TODAY)
         courseExecutionRepository.save(externalCourseExecution)
-    }
-
-    def createQuiz(int key, String title) {
-        def quizDto = new QuizDto()
-        quizDto.setKey(1)
-        quizDto.setTitle("Quiz 1")
-        quizDto.setScramble(true)
-        quizDto.setOneWay(true)
-        quizDto.setQrCodeOnly(true)
-        quizDto.setAvailableDate(STRING_DATE_TODAY)
-        quizDto.setConclusionDate(STRING_DATE_TOMORROW)
-        quizDto.setResultsDate(STRING_DATE_LATER)
-
-        return new Quiz(quizDto)
     }
 
     RESTClient restClient

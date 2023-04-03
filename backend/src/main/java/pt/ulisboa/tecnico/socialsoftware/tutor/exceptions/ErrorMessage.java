@@ -151,7 +151,7 @@ public enum ErrorMessage {
 
     DASHBOARD_NOT_FOUND("Dashboard not found: %d"),
     STUDENT_ALREADY_HAS_DASHBOARD("The student already has a dashboard for this course execution"),
-    NO_TEACHER_DASHBOARDS("There are no teacher dashboards"),
+
     TEACHER_ALREADY_HAS_DASHBOARD("The teacher already has a dashboard for this course execution"),
 
     ACCESS_DENIED("You do not have permission to view this resource"),

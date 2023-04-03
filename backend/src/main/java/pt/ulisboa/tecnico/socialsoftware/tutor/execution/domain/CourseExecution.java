@@ -1,7 +1,6 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.execution.domain;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.studentdashboard.domain.DifficultQuestion;
-import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain.StudentStats;
 import pt.ulisboa.tecnico.socialsoftware.tutor.discussion.domain.Discussion;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
@@ -16,8 +15,6 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.Student;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.Teacher;
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.User;
-import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain.QuestionStats;
-import pt.ulisboa.tecnico.socialsoftware.tutor.teacherdashboard.domain.QuizStats;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -250,7 +247,6 @@ public class CourseExecution implements DomainEntity {
                 .count();
     }
 
-
     public int getNumberofInactiveTeachers() {
         return (int) this.users.stream()
                 .filter(user ->
@@ -273,7 +269,6 @@ public class CourseExecution implements DomainEntity {
                                 (user.getAuthUser() == null || !user.getAuthUser().isActive()))
                 .count();
     }
-
 
     public int getNumberOfQuizzes() {
         return this.quizzes.size();

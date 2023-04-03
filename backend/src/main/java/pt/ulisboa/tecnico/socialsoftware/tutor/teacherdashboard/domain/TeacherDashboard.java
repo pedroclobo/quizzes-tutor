@@ -7,11 +7,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.Teacher;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.*;
-
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 public class TeacherDashboard implements DomainEntity {
@@ -26,17 +22,14 @@ public class TeacherDashboard implements DomainEntity {
     @ManyToOne
     private Teacher teacher;
 
-    @OneToMany(mappedBy = "teacherDashboard", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<QuestionStats> questionStats = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<QuizStats> quizStats = new ArrayList<>();
 
-    @OneToMany(mappedBy = "teacherDashboard", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "teacherDashboard", orphanRemoval = true)
     private List<StudentStats> studentStats = new ArrayList<>();
 
-    @OneToMany(mappedBy = "teacherDashboard", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<QuizStats> quizStats = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<QuestionStats> questionStats = new ArrayList<>();
 
     public TeacherDashboard() {
     }
@@ -44,22 +37,6 @@ public class TeacherDashboard implements DomainEntity {
     public TeacherDashboard(CourseExecution courseExecution, Teacher teacher) {
         setCourseExecution(courseExecution);
         setTeacher(teacher);
-    }
-
-    public List<QuestionStats> getQuestionStats() {
-        return questionStats;
-    }
-
-    public void addQuestionStats(QuestionStats questionStats) {
-        this.questionStats.add(questionStats);
-    }
-
-    public void remove() {
-        teacher.getDashboards().remove(this);
-        teacher = null;
-        studentStats = null;
-        quizStats = null;
-        questionStats = null;
     }
 
     public Integer getId() {
@@ -83,36 +60,57 @@ public class TeacherDashboard implements DomainEntity {
         this.teacher.addDashboard(this);
     }
 
-    public void addStudentStats(StudentStats studentStats) {
-        this.studentStats.add(studentStats);
-    }
-
-    public List<StudentStats> getStudentStats() {
-        return studentStats;
-    }
-
     public List<QuizStats> getQuizStats() {
         return quizStats;
+    }
+
+    public void setQuizStats(List<QuizStats> stats) {
+        this.quizStats = stats;
     }
 
     public void addQuizStats(QuizStats quizStats) {
         this.quizStats.add(quizStats);
     }
 
-    public void accept(Visitor visitor) {
-        // Only used for XML generation
+    public List<StudentStats> getStudentStats() {
+        return studentStats;
+    }
+
+    public void setStudentStats(List<StudentStats> stats) {
+        this.studentStats = stats;
+    }
+
+    public void addStudentStats(StudentStats studentStat) {
+        this.studentStats.add(studentStat);
+    }
+
+    public List<QuestionStats> getQuestionStats() {
+        return questionStats;
+    }
+
+    public void setQuestionStats(List<QuestionStats> stats) {
+        this.questionStats = stats;
+    }
+
+    public void addQuestionStats(QuestionStats stats) {
+        questionStats.add(stats);
     }
 
     public void update() {
-        for (QuizStats quizStats : quizStats) {
-            quizStats.update();
-        }
-        for (StudentStats studentStats : studentStats) {
-            studentStats.update();
-        }
-        for (QuestionStats questionStat : questionStats) {
-            questionStat.update();
-        }
+        this.quizStats.forEach(QuizStats::update);
+        this.studentStats.forEach(StudentStats::update);
+        this.questionStats.forEach(QuestionStats::update);
+    }
+
+    public void remove() {
+        teacher.getDashboards().remove(this);
+        teacher = null;
+        new ArrayList<>(studentStats).forEach(StudentStats::remove);
+        studentStats = null;
+    }
+
+    public void accept(Visitor visitor) {
+        // Only used for XML generation
     }
 
     @Override
@@ -121,7 +119,9 @@ public class TeacherDashboard implements DomainEntity {
                 "id=" + id +
                 ", courseExecution=" + courseExecution +
                 ", teacher=" + teacher +
+                ", quizStats=" + quizStats +
+                ", studentStats=" + studentStats +
+                ", questionStats=" + questionStats +
                 '}';
     }
-
 }
