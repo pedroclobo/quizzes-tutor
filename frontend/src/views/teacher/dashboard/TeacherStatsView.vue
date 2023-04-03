@@ -55,6 +55,18 @@
           <p>Number of Quizzes Solved (Unique, Average Per Student)</p>
         </div>
       </div>
+
+      <div class="container">
+        <h2>Comparison with previous course executions</h2>
+      </div>
+
+      <div class="bar-chart">
+          <bar-chart :datasetLabels="['Quizzes: Total Available', 'Quizzes: Solved (Unique)', 'Quizzes: Solved (Unique, Average Per Student)']"
+                     :labels="[teacherDashboard.quizStats[0].courseExecutionYear, teacherDashboard.quizStats[1].courseExecutionYear, teacherDashboard.quizStats[2].courseExecutionYear]"
+                     :dataset-data="[[teacherDashboard.quizStats[0].numQuizzes, teacherDashboard.quizStats[1].numQuizzes, teacherDashboard.quizStats[2].numQuizzes],
+                                     [teacherDashboard.quizStats[0].numUniqueAnsweredQuizzes, teacherDashboard.quizStats[1].numUniqueAnsweredQuizzes, teacherDashboard.quizStats[2].numUniqueAnsweredQuizzes],
+                                     [teacherDashboard.quizStats[0].averageQuizzesSolved, teacherDashboard.quizStats[1].averageQuizzesSolved, teacherDashboard.quizStats[2].averageQuizzesSolved]]"/>
+      </div>
     </div>
   </div>
 </template>
@@ -63,10 +75,11 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import RemoteServices from '@/services/RemoteServices';
 import AnimatedNumber from '@/components/AnimatedNumber.vue';
+import BarChart from '@/components/BarChart.vue';
 import TeacherDashboard from '@/models/dashboard/TeacherDashboard';
 
 @Component({
-  components: { AnimatedNumber },
+  components: { AnimatedNumber, BarChart },
 })
 
 export default class TeacherStatsView extends Vue {
