@@ -1,11 +1,18 @@
+import StudentStatistics from '@/models/dashboard/StudentStatistics';
+
 export default class TeacherDashboard {
   id!: number;
-  numberOfStudents!: number;
+  studentStats: StudentStatistics[] = [];
 
   constructor(jsonObj?: TeacherDashboard) {
     if (jsonObj) {
       this.id = jsonObj.id;
-      this.numberOfStudents = jsonObj.numberOfStudents;
+
+      if (jsonObj.studentStats) {
+        this.studentStats = jsonObj.studentStats.map(
+          (studentStats: StudentStatistics) => new StudentStatistics(studentStats)
+        );
+      }
     }
   }
 }

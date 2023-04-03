@@ -3,14 +3,33 @@
     <h2>Statistics for this course execution</h2>
     <div v-if="teacherDashboard != null" class="stats-container">
       <div class="items">
-        <div ref="totalStudents" class="icon-wrapper">
-          <animated-number :number="teacherDashboard.numberOfStudents" />
+        <div ref="numStudents" class="icon-wrapper">
+          <animated-number :number="teacherDashboard.studentStats[0].numStudents" />
         </div>
         <div class="project-name">
           <p>Number of Students</p>
         </div>
       </div>
+
+    <div class="items">
+        <div ref="numMore75CorrectQuestions" class="icon-wrapper">
+          <animated-number :number="teacherDashboard.studentStats[0].numMore75CorrectQuestions" />
+        </div>
+        <div class="project-name">
+          <p>Number of Students who Solved >= 75% Questions</p>
+        </div>
+      </div>
+
+    <div class="items">
+        <div ref="numAtLeast3Quizzes" class="icon-wrapper">
+          <animated-number :number="teacherDashboard.studentStats[0].numAtLeast3Quizzes" />
+        </div>
+        <div class="project-name">
+          <p>Number of Students who Solved >= 3 Quizzes</p>
+        </div>
+      </div>
     </div>
+
 </div>
 </template>
 
