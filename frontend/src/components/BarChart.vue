@@ -26,6 +26,7 @@ export default class BarChart extends Vue {
   data = {};
   options = {
     responsive: true,
+    maintainAspectRatio: false
   };
   created() {
     ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
