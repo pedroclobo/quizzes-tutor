@@ -24,7 +24,7 @@ export default class BarChart extends Vue {
   @Prop() readonly datasetLabels!: string[];
   @Prop() readonly datasetData!: number[][];
   data = {};
-  chartOptions = {
+  options = {
     responsive: true,
   };
   created() {
