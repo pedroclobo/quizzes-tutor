@@ -82,11 +82,10 @@
           <p>Number of Questions Correctly Solved (Unique, Average Per Student)</p>
         </div>
       </div>
+    </div>
 
-      <div class="container">
-        <h2>Comparison with previous course executions</h2>
-      </div>
-
+    <h2>Comparison with previous course executions</h2>
+    <div v-if="teacherDashboard != null" class="chart-container">
       <div class="bar-chart">
           <bar-chart :datasetLabels="['Quizzes: Total Available', 'Quizzes: Solved (Unique)', 'Quizzes: Solved (Unique, Average Per Student)']"
                      :labels="[teacherDashboard.quizStats[0].courseExecutionYear, teacherDashboard.quizStats[1].courseExecutionYear, teacherDashboard.quizStats[2].courseExecutionYear]"
@@ -145,10 +144,23 @@ export default class TeacherStatsView extends Vue {
     cursor: pointer;
     transition: all 0.6s;
   }
+}
+
+.chart-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+  align-content: center;
+  height: 100%;
 
   .bar-chart {
     background-color: rgba(255, 255, 255, 0.90);
+    justify-content: center;
+    width: 800px;
     height: 400px;
+    margin: 20px;
   }
 }
 
