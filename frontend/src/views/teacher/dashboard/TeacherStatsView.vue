@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h2>Statistics for this course execution</h2>
+    <h2 v-if="teacherDashboard != null">Statistics for this course execution</h2>
     <div v-if="teacherDashboard != null" class="stats-container">
       <div class="items">
         <div ref="numStudents" class="icon-wrapper">
@@ -84,14 +84,12 @@
       </div>
     </div>
 
-    <h2>Comparison with previous course executions</h2>
-    <div v-if="teacherDashboard != null" class="chart-container">
+    <h2 v-if="teacherDashboard != null && quizLabels.length > 1">Comparison with previous course executions</h2>
+    <div v-if="teacherDashboard != null && quizLabels.length > 1" class="chart-container">
       <div class="bar-chart">
-          <bar-chart :datasetLabels="['Quizzes: Total Available', 'Quizzes: Solved (Unique)', 'Quizzes: Solved (Unique, Average Per Student)']"
-                     :labels="[teacherDashboard.quizStats[0].courseExecutionYear, teacherDashboard.quizStats[1].courseExecutionYear, teacherDashboard.quizStats[2].courseExecutionYear]"
-                     :dataset-data="[[teacherDashboard.quizStats[0].numQuizzes, teacherDashboard.quizStats[1].numQuizzes, teacherDashboard.quizStats[2].numQuizzes],
-                                     [teacherDashboard.quizStats[0].numUniqueAnsweredQuizzes, teacherDashboard.quizStats[1].numUniqueAnsweredQuizzes, teacherDashboard.quizStats[2].numUniqueAnsweredQuizzes],
-                                     [teacherDashboard.quizStats[0].averageQuizzesSolved, teacherDashboard.quizStats[1].averageQuizzesSolved, teacherDashboard.quizStats[2].averageQuizzesSolved]]"/>
+          <bar-chart :datasetLabels="quizDatasetLabels"
+                     :labels="quizLabels"
+                     :datasetData="quizDatasetData"/>
       </div>
     </div>
   </div>
@@ -112,10 +110,37 @@ export default class TeacherStatsView extends Vue {
   @Prop() readonly dashboardId!: number;
   teacherDashboard: TeacherDashboard | null = null;
 
+  quizDatasetLabels: string[] = ['Quizzes: Total Available', 'Quizzes: Solved (Unique)', 'Quizzes: Solved (Unique, Average Per Student)'];
+  quizLabels: number[] | null = null;
+  quizDatasetData: number[][] | null = null;
+
   async created() {
     await this.$store.dispatch('loading');
     try {
       this.teacherDashboard = await RemoteServices.getTeacherDashboard();
+
+      this.quizLabels = [];
+      this.quizDatasetData = [[], [], []];
+
+	  if (this.teacherDashboard.quizStats[0]) {
+        this.quizLabels.unshift(this.teacherDashboard.quizStats[0].courseExecutionYear);
+		this.quizDatasetData[0].unshift(this.teacherDashboard.quizStats[0].numQuizzes);
+		this.quizDatasetData[1].unshift(this.teacherDashboard.quizStats[0].numUniqueAnsweredQuizzes);
+		this.quizDatasetData[2].unshift(this.teacherDashboard.quizStats[0].averageQuizzesSolved);
+	  }
+	  if (this.teacherDashboard.quizStats[1]) {
+        this.quizLabels.unshift(this.teacherDashboard.quizStats[1].courseExecutionYear);
+		this.quizDatasetData[0].unshift(this.teacherDashboard.quizStats[1].numQuizzes);
+		this.quizDatasetData[1].unshift(this.teacherDashboard.quizStats[1].numUniqueAnsweredQuizzes);
+		this.quizDatasetData[2].unshift(this.teacherDashboard.quizStats[1].averageQuizzesSolved);
+	  }
+	  if (this.teacherDashboard.quizStats[2]) {
+        this.quizLabels.unshift(this.teacherDashboard.quizStats[2].courseExecutionYear);
+		this.quizDatasetData[0].unshift(this.teacherDashboard.quizStats[2].numQuizzes);
+		this.quizDatasetData[1].unshift(this.teacherDashboard.quizStats[2].numUniqueAnsweredQuizzes);
+		this.quizDatasetData[2].unshift(this.teacherDashboard.quizStats[2].averageQuizzesSolved);
+	  }
+
     } catch (error) {
       await this.$store.dispatch('error', error);
     }
