@@ -56,6 +56,33 @@
         </div>
       </div>
 
+      <div class="items">
+        <div ref="numQuizzes" class="icon-wrapper">
+          <animated-number :number="teacherDashboard.questionStats[0].numAvailable" />
+        </div>
+        <div class="project-name">
+          <p>Number of Questions</p>
+        </div>
+      </div>
+
+      <div class="items">
+        <div ref="numUniqueAnsweredQuizzes" class="icon-wrapper">
+          <animated-number :number="teacherDashboard.questionStats[0].answeredQuestionsUnique" />
+        </div>
+        <div class="project-name">
+          <p>Number of Questions Solved (Unique)</p>
+        </div>
+      </div>
+
+      <div class="items">
+        <div ref="averageQuizzesSolved" class="icon-wrapper">
+          <animated-number :number="teacherDashboard.questionStats[0].averageQuestionsAnswered" />
+        </div>
+        <div class="project-name">
+          <p>Number of Questions Correctly Solved (Unique, Average Per Student)</p>
+        </div>
+      </div>
+
       <div class="container">
         <h2>Comparison with previous course executions</h2>
       </div>
