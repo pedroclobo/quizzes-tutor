@@ -92,6 +92,13 @@
                      :datasetData="quizDatasetData"/>
       </div>
     </div>
+    <div v-if="teacherDashboard != null && questionLabels != null && questionLabels.length > 1" class="chart-container">
+      <div class="bar-chart">
+          <bar-chart :datasetLabels="questionDatasetLabels"
+                     :labels="questionLabels"
+                     :datasetData="questionDatasetData"/>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -114,6 +121,10 @@ export default class TeacherStatsView extends Vue {
   quizLabels: number[] | null = null;
   quizDatasetData: number[][] | null = null;
 
+  questionDatasetLabels: string[] = ['Questions: Total Available', 'Questions: Total Solved (Unique)', 'Questions: Correctly Solved (Unique, Average Per Student)'];
+  questionLabels: number[] | null = null;
+  questionDatasetData: number[][] | null = null;
+
   async created() {
     await this.$store.dispatch('loading');
     try {
@@ -121,6 +132,9 @@ export default class TeacherStatsView extends Vue {
 
       this.quizLabels = [];
       this.quizDatasetData = [[], [], []];
+
+      this.questionLabels = [];
+      this.questionDatasetData = [[], [], []];
 
 	  if (this.teacherDashboard.quizStats[0]) {
         this.quizLabels.unshift(this.teacherDashboard.quizStats[0].courseExecutionYear);
@@ -140,6 +154,15 @@ export default class TeacherStatsView extends Vue {
 		this.quizDatasetData[1].unshift(this.teacherDashboard.quizStats[2].numUniqueAnsweredQuizzes);
 		this.quizDatasetData[2].unshift(this.teacherDashboard.quizStats[2].averageQuizzesSolved);
 	  }
+    
+      for (let i = 0; i < 3; i++) {
+        if (this.teacherDashboard.questionStats[i]) {
+          this.questionLabels.unshift(this.teacherDashboard.questionStats[i].courseExecutionYear);
+		      this.questionDatasetData[0].unshift(this.teacherDashboard.questionStats[i].numAvailable);
+		      this.questionDatasetData[1].unshift(this.teacherDashboard.questionStats[i].answeredQuestionsUnique);
+		      this.questionDatasetData[2].unshift(this.teacherDashboard.questionStats[i].averageQuestionsAnswered);
+	      }
+      }
 
     } catch (error) {
       await this.$store.dispatch('error', error);
