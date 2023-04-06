@@ -84,7 +84,15 @@
       </div>
     </div>
 
-    <h2 v-if="teacherDashboard != null && quizLabels.length > 1">Comparison with previous course executions</h2>
+    <h2 v-if="teacherDashboard != null && quizLabels.length > 1 && studentsLabels.length > 1 && questionLabels.length > 1">Comparison with previous course executions</h2>
+    <div v-if="teacherDashboard != null && studentsLabels != null && studentsLabels.length > 1" class="chart-container">
+      <div class="bar-chart">
+          <bar-chart :datasetLabels="studentsDatasetLabels"
+                     :labels="studentsLabels"
+                     :datasetData="studentsDatasetData"/>
+      </div>
+    </div>
+
     <div v-if="teacherDashboard != null && quizLabels.length > 1" class="chart-container">
       <div class="bar-chart">
           <bar-chart :datasetLabels="quizDatasetLabels"
@@ -92,6 +100,7 @@
                      :datasetData="quizDatasetData"/>
       </div>
     </div>
+
     <div v-if="teacherDashboard != null && questionLabels != null && questionLabels.length > 1" class="chart-container">
       <div class="bar-chart">
           <bar-chart :datasetLabels="questionDatasetLabels"
@@ -99,6 +108,7 @@
                      :datasetData="questionDatasetData"/>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -117,6 +127,10 @@ export default class TeacherStatsView extends Vue {
   @Prop() readonly dashboardId!: number;
   teacherDashboard: TeacherDashboard | null = null;
 
+  studentsDatasetLabels: string[] = ['Total Number of Students', 'Students who Solved >= 75% of Questions', 'Students who Solved >= 3 Quizzes'];
+  studentsLabels: number[] | null = null;
+  studentsDatasetData: number[][] | null = null;
+
   quizDatasetLabels: string[] = ['Quizzes: Total Available', 'Quizzes: Solved (Unique)', 'Quizzes: Solved (Unique, Average Per Student)'];
   quizLabels: number[] | null = null;
   quizDatasetData: number[][] | null = null;
@@ -130,30 +144,42 @@ export default class TeacherStatsView extends Vue {
     try {
       this.teacherDashboard = await RemoteServices.getTeacherDashboard();
 
+      this.studentsLabels = [];
+      this.studentsDatasetData = [[], [], []];
+
       this.quizLabels = [];
       this.quizDatasetData = [[], [], []];
 
       this.questionLabels = [];
       this.questionDatasetData = [[], [], []];
 
-	  if (this.teacherDashboard.quizStats[0]) {
+      for (let i = 0; i < 3; i++) {
+        if (this.teacherDashboard.studentStats[i]) {
+          this.studentsLabels.unshift(this.teacherDashboard.studentStats[i].courseExecutionYear);
+          this.studentsDatasetData[0].unshift(this.teacherDashboard.studentStats[i].numStudents);
+          this.studentsDatasetData[1].unshift(this.teacherDashboard.studentStats[i].numMore75CorrectQuestions);
+          this.studentsDatasetData[2].unshift(this.teacherDashboard.studentStats[i].numAtLeast3Quizzes);
+        }
+      }
+
+      if (this.teacherDashboard.quizStats[0]) {
         this.quizLabels.unshift(this.teacherDashboard.quizStats[0].courseExecutionYear);
-		this.quizDatasetData[0].unshift(this.teacherDashboard.quizStats[0].numQuizzes);
-		this.quizDatasetData[1].unshift(this.teacherDashboard.quizStats[0].numUniqueAnsweredQuizzes);
-		this.quizDatasetData[2].unshift(this.teacherDashboard.quizStats[0].averageQuizzesSolved);
-	  }
-	  if (this.teacherDashboard.quizStats[1]) {
+        this.quizDatasetData[0].unshift(this.teacherDashboard.quizStats[0].numQuizzes);
+        this.quizDatasetData[1].unshift(this.teacherDashboard.quizStats[0].numUniqueAnsweredQuizzes);
+        this.quizDatasetData[2].unshift(this.teacherDashboard.quizStats[0].averageQuizzesSolved);
+      }
+      if (this.teacherDashboard.quizStats[1]) {
         this.quizLabels.unshift(this.teacherDashboard.quizStats[1].courseExecutionYear);
-		this.quizDatasetData[0].unshift(this.teacherDashboard.quizStats[1].numQuizzes);
-		this.quizDatasetData[1].unshift(this.teacherDashboard.quizStats[1].numUniqueAnsweredQuizzes);
-		this.quizDatasetData[2].unshift(this.teacherDashboard.quizStats[1].averageQuizzesSolved);
-	  }
-	  if (this.teacherDashboard.quizStats[2]) {
+        this.quizDatasetData[0].unshift(this.teacherDashboard.quizStats[1].numQuizzes);
+        this.quizDatasetData[1].unshift(this.teacherDashboard.quizStats[1].numUniqueAnsweredQuizzes);
+        this.quizDatasetData[2].unshift(this.teacherDashboard.quizStats[1].averageQuizzesSolved);
+      }
+      if (this.teacherDashboard.quizStats[2]) {
         this.quizLabels.unshift(this.teacherDashboard.quizStats[2].courseExecutionYear);
-		this.quizDatasetData[0].unshift(this.teacherDashboard.quizStats[2].numQuizzes);
-		this.quizDatasetData[1].unshift(this.teacherDashboard.quizStats[2].numUniqueAnsweredQuizzes);
-		this.quizDatasetData[2].unshift(this.teacherDashboard.quizStats[2].averageQuizzesSolved);
-	  }
+        this.quizDatasetData[0].unshift(this.teacherDashboard.quizStats[2].numQuizzes);
+        this.quizDatasetData[1].unshift(this.teacherDashboard.quizStats[2].numUniqueAnsweredQuizzes);
+        this.quizDatasetData[2].unshift(this.teacherDashboard.quizStats[2].averageQuizzesSolved);
+      }
     
       for (let i = 0; i < 3; i++) {
         if (this.teacherDashboard.questionStats[i]) {
