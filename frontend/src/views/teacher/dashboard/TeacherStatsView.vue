@@ -85,23 +85,17 @@
     </div>
 
     <h2 v-if="teacherDashboard != null && quizLabels.length > 1 && studentsLabels.length > 1 && questionLabels.length > 1">Comparison with previous course executions</h2>
-    <div v-if="teacherDashboard != null && studentsLabels != null && studentsLabels.length > 1" class="chart-container">
+    <div v-if="teacherDashboard != null && quizLabels.length > 1 && studentsLabels.length > 1 && questionLabels.length > 1" class="chart-container">
       <div class="bar-chart">
           <bar-chart :datasetLabels="studentsDatasetLabels"
                      :labels="studentsLabels"
                      :datasetData="studentsDatasetData"/>
       </div>
-    </div>
-
-    <div v-if="teacherDashboard != null && quizLabels.length > 1" class="chart-container">
       <div class="bar-chart">
           <bar-chart :datasetLabels="quizDatasetLabels"
                      :labels="quizLabels"
                      :datasetData="quizDatasetData"/>
       </div>
-    </div>
-
-    <div v-if="teacherDashboard != null && questionLabels != null && questionLabels.length > 1" class="chart-container">
       <div class="bar-chart">
           <bar-chart :datasetLabels="questionDatasetLabels"
                      :labels="questionLabels"
