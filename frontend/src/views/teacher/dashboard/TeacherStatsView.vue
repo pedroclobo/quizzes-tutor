@@ -160,34 +160,20 @@ export default class TeacherStatsView extends Vue {
           this.studentsDatasetData[1].unshift(this.teacherDashboard.studentStats[i].numMore75CorrectQuestions);
           this.studentsDatasetData[2].unshift(this.teacherDashboard.studentStats[i].numAtLeast3Quizzes);
         }
-      }
 
-      if (this.teacherDashboard.quizStats[0]) {
-        this.quizLabels.unshift(this.teacherDashboard.quizStats[0].courseExecutionYear);
-        this.quizDatasetData[0].unshift(this.teacherDashboard.quizStats[0].numQuizzes);
-        this.quizDatasetData[1].unshift(this.teacherDashboard.quizStats[0].numUniqueAnsweredQuizzes);
-        this.quizDatasetData[2].unshift(this.teacherDashboard.quizStats[0].averageQuizzesSolved);
-      }
-      if (this.teacherDashboard.quizStats[1]) {
-        this.quizLabels.unshift(this.teacherDashboard.quizStats[1].courseExecutionYear);
-        this.quizDatasetData[0].unshift(this.teacherDashboard.quizStats[1].numQuizzes);
-        this.quizDatasetData[1].unshift(this.teacherDashboard.quizStats[1].numUniqueAnsweredQuizzes);
-        this.quizDatasetData[2].unshift(this.teacherDashboard.quizStats[1].averageQuizzesSolved);
-      }
-      if (this.teacherDashboard.quizStats[2]) {
-        this.quizLabels.unshift(this.teacherDashboard.quizStats[2].courseExecutionYear);
-        this.quizDatasetData[0].unshift(this.teacherDashboard.quizStats[2].numQuizzes);
-        this.quizDatasetData[1].unshift(this.teacherDashboard.quizStats[2].numUniqueAnsweredQuizzes);
-        this.quizDatasetData[2].unshift(this.teacherDashboard.quizStats[2].averageQuizzesSolved);
-      }
-    
-      for (let i = 0; i < 3; i++) {
+        if (this.teacherDashboard.quizStats[i]) {
+          this.quizLabels.unshift(this.teacherDashboard.quizStats[i].courseExecutionYear);
+          this.quizDatasetData[0].unshift(this.teacherDashboard.quizStats[i].numQuizzes);
+          this.quizDatasetData[1].unshift(this.teacherDashboard.quizStats[i].numUniqueAnsweredQuizzes);
+          this.quizDatasetData[2].unshift(this.teacherDashboard.quizStats[i].averageQuizzesSolved);
+        }
+
         if (this.teacherDashboard.questionStats[i]) {
           this.questionLabels.unshift(this.teacherDashboard.questionStats[i].courseExecutionYear);
-		      this.questionDatasetData[0].unshift(this.teacherDashboard.questionStats[i].numAvailable);
-		      this.questionDatasetData[1].unshift(this.teacherDashboard.questionStats[i].answeredQuestionsUnique);
-		      this.questionDatasetData[2].unshift(this.teacherDashboard.questionStats[i].averageQuestionsAnswered);
-	      }
+		  this.questionDatasetData[0].unshift(this.teacherDashboard.questionStats[i].numAvailable);
+		  this.questionDatasetData[1].unshift(this.teacherDashboard.questionStats[i].answeredQuestionsUnique);
+		  this.questionDatasetData[2].unshift(this.teacherDashboard.questionStats[i].averageQuestionsAnswered);
+	    }
       }
 
     } catch (error) {
