@@ -354,7 +354,7 @@ Cypress.Commands.add('removeAllStudents', () => {
 Cypress.Commands.add('createAndAddQuestionToDemoCourse', () => {
   cy.task('queryDatabase', {
     query: `INSERT into questions (id, number_of_answers, number_of_correct, status, title, course_id)
-              SELECT COALESCE(MAX(id), 0) + 1, 5, 4, 'AVAILABLE', CONCAT('Question ', MAX(id) + 1), (SELECT id FROM courses WHERE name = 'Demo Course')
+              SELECT COALESCE(MAX(id), 0) + 1, 5, 4, 'AVAILABLE', CONCAT('Question ', MAX(id) + 1), (SELECT id FROM courses WHERE name = 'Demo Course' AND type = 'TECNICO')
               FROM questions`,
     credentials: credentials,
   });
