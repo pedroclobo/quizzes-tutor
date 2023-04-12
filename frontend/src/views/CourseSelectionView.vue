@@ -29,7 +29,7 @@
                     </v-list-item-content>
 
                     <v-list-item-action>
-                      <v-btn icon>
+                      <v-btn icon data-cy="selectCourseButton">
                         <v-icon
                           v-if="course.status === 'INACTIVE'"
                           color="grey lighten-1"

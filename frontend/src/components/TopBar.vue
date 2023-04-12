@@ -248,6 +248,7 @@
           v-if="isLoggedIn && moreThanOneCourse"
           active-class="no-active"
           dark
+          data-cy="changeCourseButton"
           text
           to="/courses"
         >
