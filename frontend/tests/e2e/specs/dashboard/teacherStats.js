@@ -67,6 +67,29 @@ function removeAllStudents() {
     cy.removeStudent("Student 6");
 }
 
+function visualTestChart(filename) {
+  const PNG = require('pngjs').PNG;
+  const pixelmatch = require('pixelmatch');
+
+  cy.readFile(
+    `./tests/e2e/base-screenshots/expected/${filename}`, 'base64'
+  ).then(baseImage => {
+    cy.readFile(
+      `./tests/e2e/screenshots/${filename}`, 'base64'
+    ).then(chartImage => {
+      const img1 = PNG.sync.read(Buffer.from(baseImage, 'base64'));
+      const img2 = PNG.sync.read(Buffer.from(chartImage, 'base64'));
+      const { width, height } = img1;
+      const diff = new PNG({ width, height });
+
+      // calculate pixel diff percentage
+      const numDiffPixels = pixelmatch(img1.data, img2.data, diff.data, width, height, { threshold: 0.1 });
+      const diffPercent = (numDiffPixels / (width * height) * 100);
+      expect(diffPercent).to.be.below(5);
+    });
+  });
+}
+
 describe('TeacherStats', () => {
   before(() => {
     cy.request('http://localhost:8080/auth/demo/teacher')
@@ -113,6 +136,14 @@ describe('TeacherStats', () => {
     cy.get('[data-cy="numQuestions"]').should('have.text', '2');
     cy.get('[data-cy="answeredQuestionsUnique"]').should('have.text', '1');
     cy.get('[data-cy="averageQuestionsAnswered"]').should('have.text', '1');
+
+    cy.get('canvas').eq(0).scrollIntoView().wait(5000).screenshot("2023-student-stats-chart")
+    cy.get('canvas').eq(1).scrollIntoView().wait(5000).screenshot("2023-quiz-stats-chart")
+    cy.get('canvas').eq(2).scrollIntoView().wait(5000).screenshot("2023-question-stats-chart")
+
+    visualTestChart('2023-student-stats-chart.png');
+    visualTestChart('2023-quiz-stats-chart.png');
+    visualTestChart('2023-question-stats-chart.png');
 
     cy.contains('Logout').click();
   });
