@@ -211,3 +211,216 @@ Cypress.Commands.add('getDemoCourseExecutionId', () => {
     credentials: credentials,
   });
 });
+
+Cypress.Commands.add('createCourseExecutionOnDemoCourse', (academicTerm) => {
+  cy.task('queryDatabase', {
+    query: `INSERT INTO course_executions (id, academic_term, acronym, end_date, status, type, course_id)
+              SELECT id+1, '${academicTerm}', acronym, end_date, status, type, course_id
+              FROM course_executions
+              WHERE acronym = 'DemoCourse'
+              AND id=(SELECT max(id) FROM course_executions)`,
+    credentials: credentials,
+  });
+});
+
+Cypress.Commands.add('addCourseExecutionToDemoTeacher', (academicTerm) => {
+  cy.task('queryDatabase', {
+    query: `INSERT INTO users_course_executions (users_id, course_executions_id)
+              SELECT u.id, ce.id
+              FROM users u, course_executions ce
+              WHERE u.name = 'Demo Teacher'
+              AND ce.academic_term = '${academicTerm}'`,
+    credentials: credentials,
+  });
+});
+
+Cypress.Commands.add('createAndAddCourseExecutionToDemoTeacher', (academicTerm) => {
+  cy.createCourseExecutionOnDemoCourse(academicTerm);
+  cy.addCourseExecutionToDemoTeacher(academicTerm);
+});
+
+Cypress.Commands.add('removeCourseExecutionFromDemoCourse', (academicTerm) => {
+  cy.task('queryDatabase', {
+    query: `DELETE FROM course_executions
+            WHERE academic_term = '${academicTerm}'`,
+    credentials: credentials,
+  });
+});
+
+Cypress.Commands.add('removeCourseExecutionFromDemoTeacher', (academicTerm) => {
+  cy.task('queryDatabase', {
+    query: `DELETE FROM users_course_executions
+              WHERE course_executions_id = (
+                SELECT id
+                FROM course_executions
+                WHERE academic_term = '${academicTerm}'
+              )
+              AND users_id = (
+                SELECT id
+                FROM users
+                WHERE name = 'Demo Teacher'
+              )`,
+    credentials: credentials,
+  });
+});
+
+Cypress.Commands.add('removeCourseExecution', (academicTerm) => {
+  cy.removeCourseExecutionFromDemoTeacher(academicTerm);
+  cy.removeCourseExecutionFromDemoCourse(academicTerm);
+});
+
+Cypress.Commands.add('removeTeacherDashboardFromDemoTeacher', (academicTerm) => {
+  cy.task('queryDatabase', {
+    query: `DELETE FROM teacher_dashboard
+              WHERE course_execution_id = (
+                SELECT id
+                FROM course_executions
+                WHERE academic_term = '${academicTerm}'
+              )
+              AND teacher_id = (
+                SELECT id
+                FROM users
+                WHERE name = 'Demo Teacher'
+              )`,
+    credentials: credentials,
+  });
+});
+
+Cypress.Commands.add('createAndAddQuizToCourseExecution', (quizTitle, academicTerm) => {
+  cy.task('queryDatabase', {
+    query: `INSERT INTO quizzes (id, title, type, course_execution_id)
+              SELECT MAX(id) + 1, '${quizTitle}', 'IN_CLASS', (
+                SELECT id
+                FROM course_executions
+                WHERE academic_term = '${academicTerm}'
+              )
+              FROM quizzes`,
+    credentials: credentials,
+  });
+});
+
+Cypress.Commands.add('deleteQuizzesFromCourseExecution', (academicTerm) => {
+  cy.task('queryDatabase', {
+    query: `DELETE FROM quizzes
+              WHERE course_execution_id = (
+               SELECT id FROM course_executions
+               WHERE academic_term = '${academicTerm}'
+		      )`,
+    credentials: credentials,
+  });
+});
+
+Cypress.Commands.add('createStudent', (studentName) => {
+  cy.task('queryDatabase', {
+    query: `INSERT INTO users (user_type, id, admin, creation_date, name, role)
+              SELECT 'student', MAX(id) + 1, false, NOW(), '${studentName}', 'STUDENT'
+              FROM users`,
+    credentials: credentials,
+  });
+});
+
+Cypress.Commands.add('addStudentToCourseExecution', (academicTerm) => {
+  cy.task('queryDatabase', {
+    query: `INSERT into users_course_executions (users_id, course_executions_id)
+            VALUES ((SELECT MAX(id) FROM users), (SELECT id FROM course_executions WHERE academic_term = '${academicTerm}'))`,
+    credentials: credentials,
+  });
+});
+
+Cypress.Commands.add('createAndAddStudentToCourseExecution', (studentName, academicTerm) => {
+  cy.createStudent(studentName);
+  cy.addStudentToCourseExecution(academicTerm);
+});
+
+Cypress.Commands.add('removeStudentsFromCourseExecutions', () => {
+  cy.task('queryDatabase', {
+    query: "DELETE FROM users_course_executions",
+    credentials: credentials,
+  });
+});
+
+Cypress.Commands.add('removeStudents', () => {
+  cy.task('queryDatabase', {
+    query: "DELETE FROM users WHERE user_type = 'student'",
+    credentials: credentials,
+  });
+});
+
+Cypress.Commands.add('removeAllStudents', () => {
+  cy.removeStudentsFromCourseExecutions();
+  cy.removeStudents();
+});
+
+Cypress.Commands.add('createAndAddQuestionToDemoCourse', () => {
+  cy.task('queryDatabase', {
+    query: `INSERT into questions (id, number_of_answers, number_of_correct, status, title, course_id)
+              SELECT COALESCE(MAX(id), 0) + 1, 5, 4, 'AVAILABLE', CONCAT('Question ', MAX(id) + 1), (SELECT id FROM courses WHERE name = 'Demo Course')
+              FROM questions`,
+    credentials: credentials,
+  });
+});
+
+Cypress.Commands.add('addQuestionToQuiz', (quizTitle) => {
+  cy.task('queryDatabase', {
+    query: `INSERT INTO quiz_questions (id, question_id, quiz_id)
+              SELECT COALESCE(MAX(id), 0) + 1, (SELECT MAX(id) FROM questions), (SELECT id FROM quizzes WHERE title='${quizTitle}')
+              FROM quiz_questions`,
+    credentials: credentials,
+  });
+});
+
+Cypress.Commands.add('createAndAddQuestionToQuiz', (quizTitle) => {
+  cy.createAndAddQuestionToDemoCourse();
+  cy.addQuestionToQuiz(quizTitle);
+});
+
+Cypress.Commands.add('removeQuestionsFromQuizzes', () => {
+  cy.task('queryDatabase', {
+    query: "DELETE FROM quiz_questions",
+    credentials: credentials,
+  });
+});
+
+Cypress.Commands.add('removeQuestions', () => {
+  cy.task('queryDatabase', {
+    query: "DELETE FROM questions",
+    credentials: credentials,
+  });
+});
+
+Cypress.Commands.add('removeAllQuestions', () => {
+  cy.removeQuestionsFromQuizzes();
+  cy.removeQuestions();
+});
+
+Cypress.Commands.add('addQuestionAnswer', (quizAnswerId, quizQuestionId) => {
+  cy.task('queryDatabase', {
+    query: `INSERT INTO question_answers (id, quiz_answer_id, quiz_question_id)
+              SELECT COALESCE(MAX(id), 0) + 1, ${quizAnswerId}, ${quizQuestionId}
+              FROM question_answers`,
+    credentials: credentials,
+  });
+});
+
+Cypress.Commands.add('removeAllQuestionAnswers', (quizAnswerId, quizQuestionId) => {
+  cy.task('queryDatabase', {
+    query: "DELETE FROM question_answers",
+    credentials: credentials,
+  });
+});
+
+Cypress.Commands.add('createAndAddQuizAnswer', (quizTitle, studentName) => {
+  cy.task('queryDatabase', {
+    query: `INSERT into quiz_answers (id, completed, quiz_id, user_id)
+              SELECT COALESCE(MAX(id), 0) + 1, true, (SELECT id FROM quizzes WHERE title='${quizTitle}'), (SELECT id FROM users WHERE name='${studentName}')
+              FROM quiz_answers`,
+    credentials: credentials,
+  });
+});
+
+Cypress.Commands.add('removeAllQuizAnswers', (quizId, userId) => {
+  cy.task('queryDatabase', {
+    query: "DELETE FROM quiz_answers",
+    credentials: credentials,
+  });
+});
