@@ -58,6 +58,15 @@ function removeCourseExecutions() {
     cy.removeCourseExecution("1 Semestre 2023/2024");
 }
 
+function removeAllStudents() {
+    cy.removeStudent("Student 1");
+    cy.removeStudent("Student 2");
+    cy.removeStudent("Student 3");
+    cy.removeStudent("Student 4");
+    cy.removeStudent("Student 5");
+    cy.removeStudent("Student 6");
+}
+
 describe('TeacherStats', () => {
   before(() => {
     cy.request('http://localhost:8080/auth/demo/teacher')
@@ -81,7 +90,7 @@ describe('TeacherStats', () => {
     cy.removeAllQuestionAnswers();
     cy.removeAllQuestions();
     cy.removeAllQuizAnswers();
-    cy.removeAllStudents();
+    removeAllStudents();
     removeQuizzes();
     removeCourseExecutions();
   });

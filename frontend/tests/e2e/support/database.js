@@ -332,23 +332,24 @@ Cypress.Commands.add('createAndAddStudentToCourseExecution', (studentName, acade
   cy.addStudentToCourseExecution(academicTerm);
 });
 
-Cypress.Commands.add('removeStudentsFromCourseExecutions', () => {
+Cypress.Commands.add('removeStudentFromCourseExecutions', (studentName) => {
   cy.task('queryDatabase', {
-    query: "DELETE FROM users_course_executions",
+    query: `DELETE FROM users_course_executions
+              WHERE users_id = (SELECT id FROM users WHERE name = '${studentName}')`,
     credentials: credentials,
   });
 });
 
-Cypress.Commands.add('removeStudents', () => {
+Cypress.Commands.add('removeStudentFromUsers', (studentName) => {
   cy.task('queryDatabase', {
-    query: "DELETE FROM users WHERE user_type = 'student'",
+    query: `DELETE FROM users WHERE id = (SELECT id FROM users WHERE name = '${studentName}')`,
     credentials: credentials,
   });
 });
 
-Cypress.Commands.add('removeAllStudents', () => {
-  cy.removeStudentsFromCourseExecutions();
-  cy.removeStudents();
+Cypress.Commands.add('removeStudent', (studentName) => {
+  cy.removeStudentFromCourseExecutions(studentName);
+  cy.removeStudentFromUsers(studentName);
 });
 
 Cypress.Commands.add('createAndAddQuestionToDemoCourse', () => {
