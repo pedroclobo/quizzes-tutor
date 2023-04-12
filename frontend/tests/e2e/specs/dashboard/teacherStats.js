@@ -33,10 +33,17 @@ function populate2022CE() {
 }
 
 function populate2019CE() {
-    cy.createAndAddCourseExecutionToDemoTeacher("1 Semestre 2019/2020");
-    cy.createAndAddQuizToCourseExecution("Quiz 6", "1 Semestre 2019/2020");
-    cy.createAndAddStudentToCourseExecution("Student 6", "1 Semestre 2019/2020");
-    cy.createAndAddQuestionToQuiz("Quiz 6");
+  cy.createAndAddCourseExecutionToDemoTeacher("1 Semestre 2019/2020");
+  
+  cy.createAndAddQuizToCourseExecution("Quiz 6", "1 Semestre 2019/2020");
+  cy.createAndAddQuizToCourseExecution("Quiz 7", "1 Semestre 2019/2020");
+  
+  cy.createAndAddQuestionToQuiz("Quiz 6");
+  cy.createAndAddQuestionToQuiz("Quiz 7");
+  
+  cy.createAndAddStudentToCourseExecution("Student 6", "1 Semestre 2019/2020");
+  
+  cy.createAndAddQuizAnswer("Quiz 6", "Student 6");
 }
 
 function removeQuizzes() {
@@ -92,6 +99,28 @@ describe('TeacherStats', () => {
 
     cy.get('[data-cy="numQuizzes"]').should('have.text', '3');
     cy.get('[data-cy="numUniqueAnsweredQuizzes"]').should('have.text', '3');
+    cy.get('[data-cy="averageQuizzesSolved"]').should('have.text', '1');
+
+    cy.get('[data-cy="numQuestions"]').should('have.text', '2');
+    cy.get('[data-cy="answeredQuestionsUnique"]').should('have.text', '1');
+    cy.get('[data-cy="averageQuestionsAnswered"]').should('have.text', '1');
+
+    cy.contains('Logout').click();
+  });
+
+  it('teacher accesses dashboard of the 2019 course execution', () => {
+    cy.demoTeacherLogin();
+
+    cy.get('[data-cy="changeCourseButton"]').click();
+    cy.get('[data-cy="selectCourseButton"]').eq(0).click();
+    cy.get('[data-cy="dashboardMenuButton"]').click();
+
+    cy.get('[data-cy="numStudents"]').should('have.text', '1');
+    cy.get('[data-cy="numMore75CorrectQuestions"]').should('have.text', '0');
+    cy.get('[data-cy="numAtLeast3Quizzes"]').should('have.text', '0');
+
+    cy.get('[data-cy="numQuizzes"]').should('have.text', '2');
+    cy.get('[data-cy="numUniqueAnsweredQuizzes"]').should('have.text', '1');
     cy.get('[data-cy="averageQuizzesSolved"]').should('have.text', '1');
 
     cy.get('[data-cy="numQuestions"]').should('have.text', '2');
