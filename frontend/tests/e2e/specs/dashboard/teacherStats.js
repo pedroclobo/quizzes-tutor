@@ -75,7 +75,7 @@ function visualTestChart(filename) {
     `./tests/e2e/base-screenshots/expected/${filename}`, 'base64'
   ).then(baseImage => {
     cy.readFile(
-      `./tests/e2e/screenshots/${filename}`, 'base64'
+      `./tests/e2e/screenshots/dashboard/teacherStats.js/${filename}`, 'base64'
     ).then(chartImage => {
       const img1 = PNG.sync.read(Buffer.from(baseImage, 'base64'));
       const img2 = PNG.sync.read(Buffer.from(chartImage, 'base64'));
