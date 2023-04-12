@@ -289,7 +289,7 @@ Cypress.Commands.add('removeTeacherDashboardFromDemoTeacher', (academicTerm) => 
 Cypress.Commands.add('createAndAddQuizToCourseExecution', (quizTitle, academicTerm) => {
   cy.task('queryDatabase', {
     query: `INSERT INTO quizzes (id, title, type, course_execution_id)
-              SELECT MAX(id) + 1, '${quizTitle}', 'IN_CLASS', (
+              SELECT COALESCE(MAX(id), 0) + 1, '${quizTitle}', 'IN_CLASS', (
                 SELECT id
                 FROM course_executions
                 WHERE academic_term = '${academicTerm}'
@@ -313,7 +313,7 @@ Cypress.Commands.add('deleteQuizzesFromCourseExecution', (academicTerm) => {
 Cypress.Commands.add('createStudent', (studentName) => {
   cy.task('queryDatabase', {
     query: `INSERT INTO users (user_type, id, admin, creation_date, name, role)
-              SELECT 'student', MAX(id) + 1, false, NOW(), '${studentName}', 'STUDENT'
+              SELECT 'student', COALESCE(MAX(id), 0) + 1, false, NOW(), '${studentName}', 'STUDENT'
               FROM users`,
     credentials: credentials,
   });
