@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 @Entity
 public class TeacherDashboard implements DomainEntity {
 
@@ -22,13 +25,16 @@ public class TeacherDashboard implements DomainEntity {
     @ManyToOne
     private Teacher teacher;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "teacherDashboard", orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<QuizStats> quizStats = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "teacherDashboard", orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<StudentStats> studentStats = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "dashboard", orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<QuestionStats> questionStats = new ArrayList<>();
 
     public TeacherDashboard() {
