@@ -197,7 +197,7 @@ describe('TeacherStats', () => {
     cy.get('[data-cy="answeredQuestionsUnique"]').should('have.text', '0');
     cy.get('[data-cy="averageQuestionsAnswered"]').should('have.text', '0');
 
-    cy.get('[data-cy="barChart"]').should('not.be.visible');
+    cy.get('[data-cy="barChart"]').should('not.exist');
 
     cy.contains('Logout').click();
   });
