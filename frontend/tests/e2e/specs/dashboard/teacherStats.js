@@ -110,6 +110,8 @@ describe('TeacherStats', () => {
 
   after(() => {
     cy.removeTeacherDashboardFromDemoTeacher("1 Semestre 2023/2024");
+    cy.removeTeacherDashboardFromDemoTeacher("1 Semestre 2022/2023");
+    cy.removeTeacherDashboardFromDemoTeacher("1 Semestre 2019/2020");
     cy.removeAllQuestionAnswers();
     cy.removeAllQuestions();
     cy.removeAllQuizAnswers();
