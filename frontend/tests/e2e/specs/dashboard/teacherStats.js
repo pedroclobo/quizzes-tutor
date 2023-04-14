@@ -148,6 +148,36 @@ describe('TeacherStats', () => {
     cy.contains('Logout').click();
   });
 
+  it('teacher accesses dashboard of the 2022 course execution', () => {
+    cy.demoTeacherLogin();
+
+    cy.get('[data-cy="changeCourseButton"]').click();
+    cy.get('[data-cy="selectCourseButton"]').eq(1).click();
+    cy.get('[data-cy="dashboardMenuButton"]').click();
+
+    cy.get('[data-cy="numStudents"]').should('have.text', '2');
+    cy.get('[data-cy="numMore75CorrectQuestions"]').should('have.text', '0');
+    cy.get('[data-cy="numAtLeast3Quizzes"]').should('have.text', '0');
+
+    cy.get('[data-cy="numQuizzes"]').should('have.text', '2');
+    cy.get('[data-cy="numUniqueAnsweredQuizzes"]').should('have.text', '0');
+    cy.get('[data-cy="averageQuizzesSolved"]').should('have.text', '0');
+
+    cy.get('[data-cy="numQuestions"]').should('have.text', '2');
+    cy.get('[data-cy="answeredQuestionsUnique"]').should('have.text', '0');
+    cy.get('[data-cy="averageQuestionsAnswered"]').should('have.text', '0');
+
+    cy.get('canvas').eq(0).scrollIntoView().wait(5000).screenshot("2022-student-stats-chart")
+    cy.get('canvas').eq(1).scrollIntoView().wait(5000).screenshot("2022-quiz-stats-chart")
+    cy.get('canvas').eq(2).scrollIntoView().wait(5000).screenshot("2022-question-stats-chart")
+
+    visualTestChart('2022-student-stats-chart.png');
+    visualTestChart('2022-quiz-stats-chart.png');
+    visualTestChart('2022-question-stats-chart.png');
+
+    cy.contains('Logout').click();
+  });
+
   it('teacher accesses dashboard of the 2019 course execution', () => {
     cy.demoTeacherLogin();
 
